@@ -18,8 +18,6 @@ public class ProductConverter {
             itemDTO.setPrice(item.getPrice());
             itemDTO.setDescription(item.getDescription());
             itemDTO.setImage(item.getImageUrl());
-            itemDTO.setCreated_at(item.getCreatedAt());
-            itemDTO.setUpdated_at(item.getUpdatedAt());
             lists.add(itemDTO);
         }
         return lists;
@@ -32,6 +30,7 @@ public class ProductConverter {
             itemResponse.setName(item.getName());
             itemResponse.setPrice(item.getPrice());
             itemResponse.setDescription(item.getDescription());
+            lists.add(itemResponse);
         }
         return lists;
     }
