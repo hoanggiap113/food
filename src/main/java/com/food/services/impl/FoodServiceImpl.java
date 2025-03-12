@@ -59,16 +59,6 @@ public class FoodServiceImpl implements FoodService {
         if (category_id != null) {
             categoryEntity = categoryRepository.findById(category_id).orElse(null);
         }
-        if (category_id == null) {
-            if (productRequest.getName() == null || productRequest.getName().isEmpty()) {
-                throw new RuntimeException("Category name cannot be null or empty when creating a new category");
-            }
-            categoryEntity = new CategoryEntity();
-            categoryEntity.setName(productRequest.getName());
-            categoryEntity.setCreatedAt(LocalDateTime.now());
-            categoryEntity.setUpdatedAt(LocalDateTime.now());
-            categoryEntity = categoryRepository.save(categoryEntity);
-        }
 
         // Tạo ProductEntity và gán CategoryEntity
         ProductEntity productEntity = modelMapper.map(productRequest, ProductEntity.class);
