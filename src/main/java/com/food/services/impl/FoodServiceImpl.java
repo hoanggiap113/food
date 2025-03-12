@@ -58,6 +58,8 @@ public class FoodServiceImpl implements FoodService {
         // Kiểm tra xem categoryId đã tồn tại chưa
         if (category_id != null) {
             categoryEntity = categoryRepository.findById(category_id).orElse(null);
+        }else{
+            throw new RuntimeException("Category id not found");
         }
 
         // Tạo ProductEntity và gán CategoryEntity
