@@ -2,9 +2,6 @@ package com.food.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-
-import java.sql.Date;
 
 public class ProductRequest {
         @NotBlank(message = "Product name required")
@@ -14,7 +11,7 @@ public class ProductRequest {
 
         private Double price;
 
-        private String image;
+        private String image_url;
 
         @NotNull(message = "Category ID is required")
         private Long category_id;
@@ -24,39 +21,21 @@ public class ProductRequest {
                 return name;
         }
 
-        public void setName(String name) {
-                this.name = name;
-        }
-
         public String getDescription() {
                 return description;
-        }
-
-        public void setDescription(String description) {
-                this.description = description;
         }
 
         public Double getPrice() {
                 return price;
         }
 
-        public void setPrice(Double price) {
-                this.price = price;
-        }
 
-        public String getImage() {
-                return image;
-        }
-
-        public void setImage(String image) {
-                this.image = image;
+        public String getImage_url() {
+                return image_url;
         }
 
         public Long getCategory_id() {
                 return category_id;
         }
 
-        public void setCategory_id(Long category_id) {
-                this.category_id = category_id;
-        }
 }

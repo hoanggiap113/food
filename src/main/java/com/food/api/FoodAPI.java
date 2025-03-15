@@ -14,23 +14,17 @@ import org.springframework.web.bind.annotation.*;
 public class FoodAPI {
     @Autowired
     private FoodService foodService;
-    @GetMapping("/get")
-    public List<ProductResponse> getAll(){
-        List<ProductResponse> lists = foodService.getAll();
-        return lists;
-    }
     @GetMapping("/get/{id}")
     public ProductResponse getProductById(@PathVariable Long id){
         ProductResponse result = foodService.getById(id);
         return result;
     }
-
-//    @PostMapping("/save")
-//    public ProductResponse saveProduct(@Path){
-//
-//    }
     @PostMapping("/add")
     public ProductEntity addProduct(@RequestBody ProductRequest productRequest){
         return foodService.save(productRequest);
+    }
+    @GetMapping("/get")
+    public List<ProductResponse> getProduct(@RequestParam Map<String,Object> params){
+        return foodService.getProducts(params);
     }
 }

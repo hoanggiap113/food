@@ -1,48 +1,92 @@
 package com.food.model.builders;
 
-import com.food.model.entities.CategoryEntity;
-import com.food.model.entities.ProductEntity;
-import com.food.repositories.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
-
 import java.time.LocalDateTime;
-@Component
 public class ProductBuilder {
+    private String name;
+    private String description;
+    private Double price;
+    private String imageUrl;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Long category_id;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    public ProductBuilder(Builder builder) {
+        this.name = builder.name;
+        this.description = builder.description;
+        this.price = builder.price;
+        this.imageUrl = builder.imageUrl;
+        this.createdAt = builder.createdAt;
+        this.updatedAt = builder.updatedAt;
+        this.category_id = builder.category_id;
+    }
 
-    public ProductEntity build(Map<String, Object> params) {
-        // Lấy giá trị từ params
-        String name = (String) params.get("name");
-        String description = (String) params.get("description");
-        Double price = params.get("price") != null ? Double.parseDouble(params.get("price").toString()) : null;
-        String imageUrl = (String) params.get("image_url");
-        Long categoryId = params.get("category_id") != null ? Long.parseLong(params.get("category_id").toString()) : null;
+    public String getName() {
+        return name;
+    }
 
-        // Kiểm tra các trường bắt buộc
-        if (name == null || price == null || categoryId == null) {
-            throw new IllegalArgumentException("Name, price, and category_id are required fields.");
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Long getCategory_id() {
+        return category_id;
+    }
+
+    public static class Builder{
+        private String name;
+        private String description;
+        private Double price;
+        private String imageUrl;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private Long category_id;
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
         }
-
-        // Tìm CategoryEntity từ categoryId
-        CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + categoryId));
-
-        // Tạo và thiết lập giá trị cho ProductEntity
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setName(name);
-        productEntity.setDescription(description);
-        productEntity.setPrice(price);
-        productEntity.setImageUrl(imageUrl);
-        productEntity.setCreatedAt(LocalDateTime.now());
-        productEntity.setUpdatedAt(LocalDateTime.now());
-        productEntity.addCategory(categoryEntity);
-
-        return productEntity;
+        public Builder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+        public Builder setPrice(Double price) {
+            this.price = price;
+            return this;
+        }
+        public Builder setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+        public Builder setCreatedAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+        public Builder setUpdatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+        public Builder setCategory_id(Long category_id) {
+            this.category_id = category_id;
+            return this;
+        }
+        public ProductBuilder build(){
+            return new ProductBuilder(this);
+        }
     }
 }

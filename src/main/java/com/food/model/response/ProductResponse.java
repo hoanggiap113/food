@@ -2,14 +2,14 @@ package com.food.model.response;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 @Data
 public class ProductResponse {
     private Long id;
     private String name;
     private String description;
     private Double price;
+    private String image_url;
+    private String category_name;
 
     public Long getId() {
         return id;
@@ -41,5 +41,21 @@ public class ProductResponse {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    public String getCategory_name() {
+        return category_name;
+    }
+
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 }

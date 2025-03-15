@@ -13,4 +13,5 @@ public interface FoodService {
     List<ProductResponse> getAll();
     ProductResponse getById(Long id);
     ProductEntity save(ProductRequest productRequest);
+    List<ProductResponse> getProducts(Map<String,Object> params);
 }
