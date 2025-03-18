@@ -38,9 +38,15 @@ public class ProductEntity {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name="quantity")
+    private Long quantity;
+
+    @Column(name="status")
+    private String status;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     CategoryEntity categoryEntity = new CategoryEntity();
+
 
     public Long getId() {
         return id;
@@ -108,5 +114,21 @@ public class ProductEntity {
 
     public void addCategory(CategoryEntity categoryEntity) {
         this.categoryEntity = categoryEntity;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
