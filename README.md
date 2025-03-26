@@ -72,8 +72,8 @@ npm run dev
 
 ## 👨‍💻 Tác Giả
 
-- Tên: [Tên của bạn]
-- Email: [email của bạn]
+- Tên: Hoàng Nguyên Giáp  
+- Email: hoangnguyengiap04@gmail.com
 
 ---
 
