@@ -72,7 +72,7 @@ npm run dev
 
 ## 👨‍💻 Tác Giả
 
-- Tên: Hoàng Nguyên Giáp  
+- Tên: Hoàng Nguyên Giáp,Lê Việt Hoàng.
 - Email: hoangnguyengiap04@gmail.com
 
 ---
