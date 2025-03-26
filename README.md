@@ -16,7 +16,7 @@ Một dự án web giao hàng đồ ăn, lấy cảm hứng từ các nền tả
 
 ## 📊 Công Nghệ Sử Dụng
 
-- **Frontend**: React.js + Tailwind CSS
+- **Frontend**: React.js
 - **Backend**: Java Spring Boot
 - **Database**: MySQL
 - **Authentication**: JWT (JSON Web Tokens)
