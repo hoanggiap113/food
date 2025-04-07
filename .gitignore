@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Bỏ qua tệp cấu hình nhạy cảm
+application-uat.properties
+application-pro.properties
+
