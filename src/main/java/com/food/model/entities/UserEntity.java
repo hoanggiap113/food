@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "users")
-public class UserEntity extends BaseEntity {
+public class UserEntity  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,4 +33,6 @@ public class UserEntity extends BaseEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name="role_id")
     private RoleEntity roleEntity;
-}
+    }
+
+

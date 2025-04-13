@@ -38,8 +38,8 @@ public class ProductEntity extends BaseEntity {
     @Column(name="type")
     private String type;
 
-    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "category_id")
-    CategoryEntity categoryEntity = new CategoryEntity();
+    CategoryEntity categoryEntity;
 
 }

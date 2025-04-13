@@ -9,4 +9,6 @@ public interface IProductService {
     List<ProductResponse> getAll();
     ProductEntity getProductById(Long id) throws Exception;
     ProductEntity saveProduct(ProductRequestDTO body) throws Exception;
+    ProductEntity updateProduct(ProductRequestDTO body,Long id) throws Exception;
+    void deleteProduct(Long id) throws Exception;
 }

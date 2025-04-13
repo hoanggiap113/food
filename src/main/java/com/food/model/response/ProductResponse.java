@@ -26,8 +26,6 @@ public class ProductResponse extends BaseEntity {
                 .category_name(product.getCategoryEntity().getName())
                 .quantity(product.getQuantity())
                 .build();
-        productResponse.setCreatedAt(product.getCreatedAt());
-        productResponse.setUpdatedAt(product.getUpdatedAt());
         return productResponse;
     }
 }

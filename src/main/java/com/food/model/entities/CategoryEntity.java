@@ -22,6 +22,6 @@ public class CategoryEntity extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "categoryEntity",cascade = {CascadeType.DETACH,CascadeType.PERSIST,CascadeType.MERGE},orphanRemoval = true)
-    private List<ProductEntity> products = new ArrayList<>();
+    @OneToMany(mappedBy = "categoryEntity",cascade = {CascadeType.DETACH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE},orphanRemoval = true)
+    private List<ProductEntity> products;
 }

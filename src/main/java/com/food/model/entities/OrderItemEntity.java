@@ -29,4 +29,6 @@ public class OrderItemEntity {
     @Column(name="price")
     private Double price;
 
+    @Column(name="total_price")
+    private Double totalPrice;
 }
