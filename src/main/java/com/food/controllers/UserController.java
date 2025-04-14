@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/")
+    @PostMapping(value = "/adduser")
     public Long addUser(@RequestBody UserRequestDTO user) {
         log.info("Request add user, {}", user.getName());
 

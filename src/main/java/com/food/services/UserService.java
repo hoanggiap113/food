@@ -21,4 +21,6 @@ public interface UserService {
     Boolean isEmailExist(String email);
 
     UserDetailResponse authenticate(AuthenticationRequestDTO request);
+
+    UserDetailResponse saveOrUpdateGoogleUser(String email, String name);
 }
