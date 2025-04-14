@@ -4,6 +4,8 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,25 +18,15 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "jwt")
+@Getter
 public class JwtConfig {
 
     private RSAPrivateKey privateKey;
     private RSAPublicKey publicKey;
     private Duration ttl;
-
-    public void setPrivateKey(RSAPrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPublicKey(RSAPublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public void setTtl(Duration ttl) {
-        this.ttl = ttl;
-    }
 
     @Bean
     public JwtEncoder jwtEncoder() {
@@ -48,9 +40,5 @@ public class JwtConfig {
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
-    }
-
-    public Duration getTtl() {
-        return ttl;
     }
 }

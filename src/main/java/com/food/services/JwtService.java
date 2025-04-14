@@ -29,7 +29,6 @@ public class JwtService {
         Instant now = Instant.now();
         Instant expiry = now.plus(ttl);
 
-        // Dùng org.springframework.security.oauth2.jwt.JwtClaimsSet thay vì com.nimbusds.jwt.JWTClaimsSet
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(appName)
                 .issuedAt(now)
@@ -45,9 +44,17 @@ public class JwtService {
         try {
             jwtDecoder.decode(token);
             return true;
-        }
-        catch (Exception e) {
+        } catch (JwtException e) {
+            System.out.println("JWT validation failed: " + e.getMessage());
             return false;
         }
+    }
+
+    public String getUsernameFromToken(String token) {
+        return jwtDecoder.decode(token).getSubject();
+    }
+
+    public List<String> getRolesFromToken(String token) {
+        return (List<String>) jwtDecoder.decode(token).getClaims().get("roles");
     }
 }

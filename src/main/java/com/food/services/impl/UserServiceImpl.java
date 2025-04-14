@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public long saveUser(UserRequestDTO request) {
-        if (isEmailExist(request.getEmail())) {return 0;}
+        if (isEmailExist(request.getEmail())) {
+            return 0;
+        }
 
         Role role = roleRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Role with ID 1 (USER) not found"));
@@ -46,13 +49,13 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        log.info("User has save!");
-
+        log.info("User has saved!");
         return user.getId();
     }
 
     @Override
     public void updateUser(long userId, UserRequestDTO request) {
+        // Triển khai sau nếu cần
     }
 
     @Override
@@ -94,20 +97,58 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailResponse authenticate(AuthenticationRequestDTO request) {
-        // Kiểm tra email có tồn tại không
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
         System.out.println("Stored Password: " + user.get().getPassword());
         System.out.println("Raw Password: " + request.getPassWord());
 
-        // Nếu user không tồn tại hoặc sai mật khẩu, ném lỗi
-        if (user.isEmpty() || !passwordEncoder.matches(request.getPassWord(), user.get().getPassword())) {
+        if (!passwordEncoder.matches(request.getPassWord(), user.get().getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không đúng");
         }
 
         return UserDetailResponse.builder()
                 .name(user.get().getName())
                 .email(user.get().getEmail())
+                .role(user.get().getName())
+                .build();
+    }
+
+    @Override
+    public UserDetailResponse saveOrUpdateGoogleUser(String email, String name) {
+        // Kiểm tra xem email đã tồn tại chưa
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        User user;
+        if (existingUser.isPresent()) {
+            // Nếu user đã tồn tại, cập nhật tên nếu cần
+            user = existingUser.get();
+            if (!user.getName().equals(name)) {
+                user.setName(name);
+                userRepository.save(user);
+                log.info("Updated Google user with email: {}", email);
+            }
+        } else {
+            // Nếu user chưa tồn tại, tạo mới
+            Role role = roleRepository.findById(1L)
+                    .orElseThrow(() -> new RuntimeException("Role with ID 1 (USER) not found"));
+
+            user = User.builder()
+                    .name(name)
+                    .email(email)
+                    .password(passwordEncoder.encode("google-auth-" + UUID.randomUUID())) // Password giả
+                    .role(role)
+                    .build();
+
+            userRepository.save(user);
+            log.info("Saved new Google user with email: {}", email);
+        }
+
+        // Trả về thông tin user để tạo JWT
+        return UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole().getName())
                 .build();
     }
 }
