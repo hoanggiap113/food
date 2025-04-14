@@ -1,7 +1,6 @@
 package com.food.controllers;
 
-import com.food.model.entities.OrderEntity;
-import com.food.model.response.OrderDetailResponse;
+import com.food.model.entities.Order;
 import com.food.services.impl.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrder(@Valid @PathVariable("id") Long orderId) {
         try{
-            OrderEntity existingOrder = orderService.getOrderById(orderId);
+            Order existingOrder = orderService.getOrderById(orderId);
             return ResponseEntity.ok(existingOrder);
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

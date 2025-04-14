@@ -3,20 +3,14 @@ package com.food.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@Getter
-@Setter
 @Table(name="products")
-
-public class ProductEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Product extends AbstractEntity{
 
     @Column(name ="name",nullable = false,length = 300)
     private String name;
@@ -35,11 +29,11 @@ public class ProductEntity extends BaseEntity {
 
     @Column(name="status")
     private String status;
+
     @Column(name="type")
     private String type;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    CategoryEntity categoryEntity;
-
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category categoryId;
 }

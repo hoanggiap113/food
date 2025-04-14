@@ -1,13 +1,13 @@
 package com.food.controllers;
 
-import com.food.model.entities.ProductEntity;
+import com.food.model.entities.Product;
 import com.food.model.request.ProductRequestDTO;
 import com.food.model.response.ProductResponse;
 import com.food.model.response.ResponseData;
 import com.food.services.IProductService;
 import com.food.services.impl.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,11 +19,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
     private IProductService iProductService;
-    @Autowired
     private ProductService productService;
 
     @GetMapping("")
@@ -40,7 +39,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData<ProductResponse>> getProductById(@PathVariable Long id) {
         try {
-            ProductEntity product = iProductService.getProductById(id);
+            Product product = iProductService.getProductById(id);
             if (product == null) {
                 ResponseData<ProductResponse> response = new ResponseData<>(
                         HttpStatus.NOT_FOUND.value(),
@@ -84,7 +83,7 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            ProductEntity savedProduct = iProductService.saveProduct(product);
+            Product savedProduct = iProductService.saveProduct(product);
 
             if (savedProduct != null) {
                 ResponseData<ProductResponse> response = new ResponseData<>(
@@ -131,7 +130,7 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            ProductEntity updatedProduct = iProductService.updateProduct(product, id);
+            Product updatedProduct = iProductService.updateProduct(product, id);
 
             if (updatedProduct == null) {
                 ResponseData<ProductResponse> response = new ResponseData<>(

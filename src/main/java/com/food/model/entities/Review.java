@@ -2,9 +2,9 @@ package com.food.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -13,21 +13,23 @@ import java.time.LocalDateTime;
 @Table(name="reviews")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewEntity {
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private UserEntity user;
+    private User user;
 
     @Column(name="comment")
     private String comment;
 
-    @Column(name="created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created_at;
 }

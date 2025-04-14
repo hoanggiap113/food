@@ -10,18 +10,18 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderItemEntity {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name="order_id")
-    private OrderEntity order;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name="product_id")
-    private ProductEntity product;
+    private Product product;
 
     @Column(name="quantity")
     private int quantity;
