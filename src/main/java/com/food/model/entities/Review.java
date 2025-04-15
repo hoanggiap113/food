@@ -12,10 +12,8 @@ import java.time.LocalDateTime;
 @Table(name="reviews")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Review extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

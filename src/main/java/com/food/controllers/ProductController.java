@@ -2,12 +2,16 @@ package com.food.controllers;
 
 import com.food.model.entities.Product;
 import com.food.dto.ProductRequestDTO;
+import com.food.response.ProductListResponse;
 import com.food.response.ProductResponseDTO;
 import com.food.response.ResponseData;
 import com.food.services.IProductService;
 import com.food.services.impl.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
@@ -26,17 +30,34 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("")
-    public ResponseEntity<ResponseData<List<ProductResponseDTO>>> getProducts() {
-        List<ProductResponseDTO> products = iProductService.getAll();
-        ResponseData<List<ProductResponseDTO>> response = new ResponseData<>(
-                HttpStatus.OK.value(),
-                "Lấy danh sách sản phẩm thành công",
-                products
-        );
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<ResponseData<List<ProductResponseDTO>>> getProducts() {
+//        List<ProductResponseDTO> products = iProductService.getAll();
+//        ResponseData<List<ProductResponseDTO>> response = new ResponseData<>(
+//                HttpStatus.OK.value(),
+//                "Lấy danh sách sản phẩm thành công",
+//                products
+//        );
+//        return ResponseEntity.ok(response);
+//    }
 
+    @GetMapping("")
+    public ResponseEntity<ProductListResponse> getProducts(
+            @RequestParam("page") int page,
+            @RequestParam("limit") int limit
+    ){
+        PageRequest pageRequest = PageRequest.of(
+                page,limit,
+                Sort.by("createdAt").descending());
+        Page<ProductResponseDTO> productPage = productService.getAllProduct(pageRequest);
+        int totalPages = productPage.getTotalPages();
+        List<ProductResponseDTO> products = productPage.getContent();
+        return ResponseEntity.ok(ProductListResponse
+                .builder()
+                .products(products)
+                .totalPages(totalPages)
+                .build());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData<ProductResponseDTO>> getProductById(@PathVariable Long id) {
         try {

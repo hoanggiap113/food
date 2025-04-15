@@ -11,6 +11,8 @@ import com.food.repositories.CategoryRepository;
 import com.food.repositories.ProductRepository;
 import com.food.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.stream.*;
 import java.util.List;
@@ -26,6 +28,11 @@ public class ProductService implements IProductService {
     public List<ProductResponseDTO> getAll() {
         List<ProductResponseDTO> results = productRepository.findAll().stream().map(ProductResponseDTO::fromProduct).collect(Collectors.toList());
         return results;
+    }
+
+    @Override
+    public Page<ProductResponseDTO> getAllProduct(PageRequest pageRequest) {
+        return productRepository.findAll(pageRequest).map(ProductResponseDTO::fromProduct);
     }
 
     @Override

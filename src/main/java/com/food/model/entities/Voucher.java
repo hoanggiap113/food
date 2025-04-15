@@ -12,9 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name="vouchers")
 public class Voucher extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name="code")
     private String code;
