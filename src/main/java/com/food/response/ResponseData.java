@@ -1,4 +1,4 @@
-package com.food.model.response;
+package com.food.response;
 
 public class ResponseData<T> {
     private int status;

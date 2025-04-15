@@ -1,7 +1,6 @@
-package com.food.model.response;
+package com.food.response;
 import com.food.model.entities.BaseEntity;
-import com.food.model.entities.ProductEntity;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.food.model.entities.Product;
 import lombok.*;
 
 @Getter
@@ -9,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponse extends BaseEntity {
+public class ProductResponseDTO extends BaseEntity {
     private String name;
     private String description;
     private Double price;
@@ -17,15 +16,15 @@ public class ProductResponse extends BaseEntity {
     private Long quantity;
     private String category_name;
 
-    public static ProductResponse fromProduct(ProductEntity product){
-        ProductResponse productResponse = ProductResponse.builder()
+    public static ProductResponseDTO fromProduct(Product product){
+        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .image_url(product.getImageUrl())
-                .category_name(product.getCategoryEntity().getName())
+                .category_name(product.getCategory().getName())
                 .quantity(product.getQuantity())
                 .build();
-        return productResponse;
+        return productResponseDTO;
     }
 }

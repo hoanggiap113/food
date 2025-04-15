@@ -1,4 +1,4 @@
-package com.food.model.request;
+package com.food.dto;
 import java.util.List;
 
 import jakarta.validation.constraints.Min;

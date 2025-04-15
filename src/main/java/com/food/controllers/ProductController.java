@@ -1,9 +1,9 @@
 package com.food.controllers;
 
-import com.food.model.entities.ProductEntity;
-import com.food.model.request.ProductRequestDTO;
-import com.food.model.response.ProductResponse;
-import com.food.model.response.ResponseData;
+import com.food.model.entities.Product;
+import com.food.dto.ProductRequestDTO;
+import com.food.response.ProductResponseDTO;
+import com.food.response.ResponseData;
 import com.food.services.IProductService;
 import com.food.services.impl.ProductService;
 import jakarta.validation.Valid;
@@ -27,9 +27,9 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseData<List<ProductResponse>>> getProducts() {
-        List<ProductResponse> products = iProductService.getAll();
-        ResponseData<List<ProductResponse>> response = new ResponseData<>(
+    public ResponseEntity<ResponseData<List<ProductResponseDTO>>> getProducts() {
+        List<ProductResponseDTO> products = iProductService.getAll();
+        ResponseData<List<ProductResponseDTO>> response = new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Lấy danh sách sản phẩm thành công",
                 products
@@ -38,25 +38,25 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseData<ProductResponse>> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ResponseData<ProductResponseDTO>> getProductById(@PathVariable Long id) {
         try {
-            ProductEntity product = iProductService.getProductById(id);
+            Product product = iProductService.getProductById(id);
             if (product == null) {
-                ResponseData<ProductResponse> response = new ResponseData<>(
+                ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.NOT_FOUND.value(),
                         "Không tìm thấy sản phẩm với ID: " + id,
                         null
                 );
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.OK.value(),
                     "Lấy thông tin sản phẩm thành công",
-                    ProductResponse.fromProduct(product)
+                    ProductResponseDTO.fromProduct(product)
             );
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(),
                     null
@@ -66,7 +66,7 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseData<ProductResponse>> saveProduct(
+    public ResponseEntity<ResponseData<ProductResponseDTO>> saveProduct(
             @Valid @RequestBody ProductRequestDTO product,
             BindingResult bindingResult) {
         try {
@@ -76,7 +76,7 @@ public class ProductController {
                         .map(FieldError::getDefaultMessage)
                         .collect(Collectors.joining(", "));
 
-                ResponseData<ProductResponse> response = new ResponseData<>(
+                ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.BAD_REQUEST.value(),
                         "Dữ liệu không hợp lệ: " + errorMessage,
                         null
@@ -84,17 +84,17 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            ProductEntity savedProduct = iProductService.saveProduct(product);
+            Product savedProduct = iProductService.saveProduct(product);
 
             if (savedProduct != null) {
-                ResponseData<ProductResponse> response = new ResponseData<>(
+                ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.CREATED.value(),
                         "Tạo sản phẩm thành công",
-                        ProductResponse.fromProduct(savedProduct)
+                        ProductResponseDTO.fromProduct(savedProduct)
                 );
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             } else {
-                ResponseData<ProductResponse> response = new ResponseData<>(
+                ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.CONFLICT.value(),
                         "Tên sản phẩm '" + product.getName() + "' đã tồn tại",
                         null
@@ -102,7 +102,7 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             }
         } catch (Exception e) {
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(),
                     null
@@ -112,7 +112,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseData<ProductResponse>> updateProduct(
+    public ResponseEntity<ResponseData<ProductResponseDTO>> updateProduct(
             @Valid @RequestBody ProductRequestDTO product,
             BindingResult bindingResult,
             @PathVariable Long id) {
@@ -123,7 +123,7 @@ public class ProductController {
                         .map(FieldError::getDefaultMessage)
                         .collect(Collectors.joining(", "));
 
-                ResponseData<ProductResponse> response = new ResponseData<>(
+                ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.BAD_REQUEST.value(),
                         "Dữ liệu không hợp lệ: " + errorMessage,
                         null
@@ -131,10 +131,10 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            ProductEntity updatedProduct = iProductService.updateProduct(product, id);
+            Product updatedProduct = iProductService.updateProduct(product, id);
 
             if (updatedProduct == null) {
-                ResponseData<ProductResponse> response = new ResponseData<>(
+                ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.NOT_FOUND.value(),
                         "Không tìm thấy sản phẩm với ID: " + id,
                         null
@@ -142,14 +142,14 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
 
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.OK.value(),
                     "Cập nhật sản phẩm thành công",
-                    ProductResponse.fromProduct(updatedProduct)
+                    ProductResponseDTO.fromProduct(updatedProduct)
             );
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(),
                     null
@@ -158,18 +158,18 @@ public class ProductController {
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseData<ProductResponse>> deleteProduct(
+    public ResponseEntity<ResponseData<ProductResponseDTO>> deleteProduct(
             @PathVariable Long id){
         try{
             productService.deleteProduct(id);
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.BAD_REQUEST.value(),
                     "Xoa san pham thanh cong",
                     null
             );
             return ResponseEntity.ok(response);
         }catch(Exception e){
-            ResponseData<ProductResponse> response = new ResponseData<>(
+            ResponseData<ProductResponseDTO> response = new ResponseData<>(
                     HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(),
                     null

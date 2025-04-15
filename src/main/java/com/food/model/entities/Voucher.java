@@ -1,6 +1,6 @@
 package com.food.model.entities;
 import java.time.LocalDateTime;
-import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="vouchers")
-public class VoucherEntity extends BaseEntity {
+public class Voucher extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,10 @@ public class VoucherEntity extends BaseEntity {
     private String code;
 
     @Column(name="discount_percent")
-    private Float discountPercent;
+    private Double discountPercent;
+
+    @Column(name="valid_from")
+    private LocalDateTime validFrom;
 
     @Column(name="valid_to")
     private LocalDateTime validTo;

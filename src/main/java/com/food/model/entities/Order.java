@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderEntity extends BaseEntity{
+public class Order extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,14 +18,29 @@ public class OrderEntity extends BaseEntity{
     @Column(name="status")
     private String status;
 
+    @Column(name="full_name")
+    private String fullName;
+
+    @Column(name="phone_number")
+    private String phoneNumber;
+
+    @Column(name="address")
+    private String address;
+
+    @Column(name="note")
+    private String note;
+
     @Column(name="total_price")
     private Double totalPrice;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REMOVE,CascadeType.PERSIST})
     @JoinColumn(name="user_id")
-    private UserEntity userEntity;
+    private User user;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REMOVE,CascadeType.PERSIST},fetch = FetchType.LAZY)
     @JoinColumn(name="voucher_id")
-    private VoucherEntity voucherEntity;
+    private Voucher voucher;
+
+    @Column(name="active")
+    private Boolean active;
 }

@@ -3,8 +3,6 @@ package com.food.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -13,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name="products")
 
-public class ProductEntity extends BaseEntity {
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,6 +38,6 @@ public class ProductEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    CategoryEntity categoryEntity;
+    Category category;
 
 }

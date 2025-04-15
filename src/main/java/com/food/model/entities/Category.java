@@ -1,5 +1,4 @@
 package com.food.model.entities;
-import java.time.LocalDateTime;
 import java.util.*;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name="categories")
 @Entity
-public class CategoryEntity extends BaseEntity {
+public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +21,6 @@ public class CategoryEntity extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "categoryEntity",cascade = {CascadeType.DETACH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE},orphanRemoval = true)
-    private List<ProductEntity> products;
+    @OneToMany(mappedBy = "category",cascade = {CascadeType.DETACH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE},orphanRemoval = true)
+    private List<Product> products;
 }

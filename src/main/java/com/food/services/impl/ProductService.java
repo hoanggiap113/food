@@ -3,10 +3,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import com.food.customexceptions.DataNotFoundException;
-import com.food.model.entities.CategoryEntity;
-import com.food.model.entities.ProductEntity;
-import com.food.model.request.ProductRequestDTO;
-import com.food.model.response.ProductResponse;
+import com.food.model.entities.Category;
+import com.food.model.entities.Product;
+import com.food.dto.ProductRequestDTO;
+import com.food.response.ProductResponseDTO;
 import com.food.repositories.CategoryRepository;
 import com.food.repositories.ProductRepository;
 import com.food.services.IProductService;
@@ -23,22 +23,22 @@ public class ProductService implements IProductService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<ProductResponse> getAll() {
-        List<ProductResponse> results = productRepository.findAll().stream().map(ProductResponse::fromProduct).collect(Collectors.toList());
+    public List<ProductResponseDTO> getAll() {
+        List<ProductResponseDTO> results = productRepository.findAll().stream().map(ProductResponseDTO::fromProduct).collect(Collectors.toList());
         return results;
     }
 
     @Override
-    public ProductEntity getProductById(Long id) throws Exception {
+    public Product getProductById(Long id) throws Exception {
         return productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Product not found with id=" + id));
     }
 
     @Override
-    public ProductEntity saveProduct(ProductRequestDTO body) throws Exception {
-        CategoryEntity existingCategory = categoryRepository.findById(body.getCategory_id()).orElseThrow(() -> new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
-        ProductEntity productEntity = productRepository.findByName(body.getName());
+    public Product saveProduct(ProductRequestDTO body) throws Exception {
+        Category existingCategory = categoryRepository.findById(body.getCategory_id()).orElseThrow(() -> new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
+        Product productEntity = productRepository.findByName(body.getName());
         if(body.getName() != null && !body.getName().isEmpty() && productEntity == null) {
-            ProductEntity productNew = ProductEntity.builder()
+            Product productNew = Product.builder()
                     .name(body.getName())
                     .description(body.getDescription())
                     .price(body.getPrice())
@@ -46,7 +46,7 @@ public class ProductService implements IProductService {
                     .quantity(body.getQuantity())
                     .status("available")
                     .type(body.getType().stream().collect(Collectors.joining(",")))
-                    .categoryEntity(existingCategory)
+                    .category(existingCategory)
                     .build();
             return productRepository.save(productNew);
         }else{
@@ -55,10 +55,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductEntity updateProduct(ProductRequestDTO body, Long id) throws Exception {
-        ProductEntity existingProduct = getProductById(id);
+    public Product updateProduct(ProductRequestDTO body, Long id) throws Exception {
+        Product existingProduct = getProductById(id);
         if(existingProduct != null) {
-            CategoryEntity existingCategory = categoryRepository.findById(body.getCategory_id()).orElseThrow(() ->
+            Category existingCategory = categoryRepository.findById(body.getCategory_id()).orElseThrow(() ->
                     new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
             existingProduct.setName(body.getName());
             existingProduct.setDescription(body.getDescription());
@@ -74,7 +74,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(Long id) throws Exception {
-        Optional<ProductEntity> productEntity = productRepository.findById(id);
+        Optional<Product> productEntity = productRepository.findById(id);
         if(productEntity.isPresent()) {
             productRepository.delete(productEntity.get());
         }

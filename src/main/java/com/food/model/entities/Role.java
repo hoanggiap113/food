@@ -2,7 +2,6 @@ package com.food.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -11,7 +10,7 @@ import java.util.List;
 @Table(name="roles")
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleEntity {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

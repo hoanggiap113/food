@@ -1,7 +1,7 @@
 //package com.food.repositories.custom.impl;
 //
 //import com.food.model.builders.ProductBuilder;
-//import com.food.model.entities.ProductEntity;
+//import com.food.model.entities.Product;
 //import com.food.repositories.custom.CustomFoodRepository;
 //import com.food.utils.UtilsCheckNumber;
 //import jakarta.persistence.EntityManager;
@@ -16,14 +16,14 @@
 //    @PersistenceContext
 //    private EntityManager entityManager;
 //    @Override
-//    public List<ProductEntity> findProduct(ProductBuilder productBuilder) {
+//    public List<Product> findProduct(ProductBuilder productBuilder) {
 //        String sql = "select p.* FROM products p";
 //        sql += join_table(productBuilder);
 //        sql += " where 1 = 1 ";
 //        sql += handle_query(productBuilder);
 //        sql += handle_special_query(productBuilder);
 //        sql += " group by p.id; ";
-//        Query query = entityManager.createNativeQuery(sql,ProductEntity.class);
+//        Query query = entityManager.createNativeQuery(sql,Product.class);
 //        return query.getResultList();
 //    }
 //    public String join_table(ProductBuilder productBuilder) {
