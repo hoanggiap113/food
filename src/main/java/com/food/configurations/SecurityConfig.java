@@ -2,7 +2,6 @@ package com.food.configurations;
 
 import com.food.dto.response.UserDetailResponse;
 import com.food.security.JwtFilter;
-import com.food.services.IUserService;
 import com.food.services.JwtService;
 import com.food.services.IUserService;
 import lombok.Getter;
@@ -34,13 +33,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user/**","/product/**").hasRole("ADMIN") // Chỉ ADMIN truy cập /user/**
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/**").permitAll() // Cho phép truy cập toàn bộ /auth/**
+                        .requestMatchers("/user/**", "/product/**").hasRole("ADMIN") // Chỉ ADMIN truy cập /user/**
+                        .anyRequest().authenticated() // Bảo vệ các yêu cầu khác
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/auth/login")
+                        .loginPage("/auth/oauth2-login") // Trang login OAuth2
                         .successHandler((request, response, authentication) -> {
                             DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
                             String email = oidcUser.getEmail();
@@ -50,11 +50,12 @@ public class SecurityConfig {
                             response.sendRedirect("/auth/google-callback?token=" + jwt);
                         })
                         .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("/auth/login-error?error=" + URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8));
+                            response.sendRedirect("/auth/oauth2-login?error=" + URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8));
                         })
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
+
 

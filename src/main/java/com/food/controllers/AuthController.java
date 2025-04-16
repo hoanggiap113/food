@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 
@@ -36,23 +35,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO request) {
-        try {
-            UserDetailResponse user = userService.authenticate(request);
-            String token = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
-            return ResponseEntity.ok(new AuthenticationResponseDTO(token, true));
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống khi đăng nhập");
-        }
+        UserDetailResponse user = userService.authenticate(request);
+        String token = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
+        return ResponseEntity.ok(new AuthenticationResponseDTO(token, true));
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<?> loginPage() {
-        return ResponseEntity.ok("{\"message\": \"Vui lòng đăng nhập\", \"loginUrl\": \"/auth/login\", \"googleLoginUrl\": \"/oauth2/authorization/google\"}");
-    }
-
-    @GetMapping("/login-error")
+    @GetMapping("/oauth2-login")
     public ResponseEntity<?> loginError(@RequestParam(value = "error", required = false) String error) {
         if (error != null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Google login failed");

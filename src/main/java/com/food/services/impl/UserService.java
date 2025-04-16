@@ -97,34 +97,38 @@ public class UserService implements IUserService {
 
     @Override
     public UserDetailResponse authenticate(AuthenticationRequestDTO request) {
-
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if (userOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tài khoản không tồn tại");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không đúng");
         }
 
         User user = userOptional.get();
 
+        System.out.println("Stored Password: " + user.getPassword());
+        System.out.println("Raw Password: " + request.getPassWord());
+
         if (!passwordEncoder.matches(request.getPassWord(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Mật khẩu không đúng");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không đúng");
         }
 
         return UserDetailResponse.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole().getName())
                 .build();
     }
 
+
     @Override
     public UserDetailResponse saveOrUpdateGoogleUser(String email, String name) {
-
+        // Kiểm tra xem email đã tồn tại chưa
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         User user;
         if (existingUser.isPresent()) {
-
+            // Nếu user đã tồn tại, cập nhật tên nếu cần
             user = existingUser.get();
             if (!user.getName().equals(name)) {
                 user.setName(name);
@@ -132,7 +136,7 @@ public class UserService implements IUserService {
                 log.info("Updated Google user with email: {}", email);
             }
         } else {
-
+            // Nếu user chưa tồn tại, tạo mới
             Role role = roleRepository.findById(1L)
                     .orElseThrow(() -> new RuntimeException("Role with ID 1 (USER) not found"));
 
@@ -147,6 +151,7 @@ public class UserService implements IUserService {
             log.info("Saved new Google user with email: {}", email);
         }
 
+        // Trả về thông tin user để tạo JWT
         return UserDetailResponse.builder()
                 .id(user.getId())
                 .name(user.getName())

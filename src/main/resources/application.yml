@@ -3,4 +3,24 @@ jwt:
   public-key: classpath:jwt/app.pub
   ttl: 15m
 
-
+spring:
+  application:
+    name: food-order-service
+    
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: YOUR_GOOGLE_CLIENT_ID
+            client-secret: YOUR_GOOGLE_CLIENT_SECRET
+            scope: profile,email
+          facebook:
+            client-id: YOUR_FACEBOOK_CLIENT_ID
+            client-secret: YOUR_FACEBOOK_CLIENT_SECRET
+            scope: public_profile,email
+        provider:
+          google:
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+          facebook:
+            user-info-uri: https://graph.facebook.com/me?fields=id,name,email

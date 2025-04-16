@@ -26,8 +26,9 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication required");
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -36,29 +37,26 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 String username = jwtService.getUsernameFromToken(token);
                 List<String> roles = jwtService.getRolesFromToken(token);
-                if (username == null || roles == null) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token claims");
-                    return;
+                if (username != null && roles != null) {
+                    List<SimpleGrantedAuthority> authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-                List<SimpleGrantedAuthority> authorities = roles.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                filterChain.doFilter(request, response);
             } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token claims: " + e.getMessage());
+                System.out.println("JWT parsing error: " + e.getMessage());
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
         }
+
+        filterChain.doFilter(request, response);
     }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/auth/"); // Bỏ qua tất cả request tới /auth/**
+        return path.startsWith("/auth/"); // Bỏ qua tất cả request đến /auth/**
     }
 }
