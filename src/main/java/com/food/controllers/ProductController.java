@@ -5,30 +5,32 @@ import com.food.dto.ProductRequestDTO;
 import com.food.response.ProductListResponse;
 import com.food.response.ProductResponseDTO;
 import com.food.response.ResponseData;
+import com.food.services.FileStorageService;
 import com.food.services.IProductService;
 import com.food.services.impl.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
+@RequiredArgsConstructor
 public class ProductController {
-
-    @Autowired
-    private IProductService iProductService;
-    @Autowired
-    private ProductService productService;
+    private final IProductService iProductService;
+    private final ProductService productService;
+    private final FileStorageService fileStorageService;
 
 //    @GetMapping("")
 //    public ResponseEntity<ResponseData<List<ProductResponseDTO>>> getProducts() {
@@ -86,11 +88,59 @@ public class ProductController {
         }
     }
 
-    @PostMapping("")
+//    @PostMapping("")
+//    public ResponseEntity<ResponseData<ProductResponseDTO>> saveProduct(
+//            @Valid @RequestBody ProductRequestDTO product,
+//            BindingResult bindingResult) {
+//        try {
+//            if (bindingResult.hasErrors()) {
+//                String errorMessage = bindingResult.getFieldErrors()
+//                        .stream()
+//                        .map(FieldError::getDefaultMessage)
+//                        .collect(Collectors.joining(", "));
+//
+//                ResponseData<ProductResponseDTO> response = new ResponseData<>(
+//                        HttpStatus.BAD_REQUEST.value(),
+//                        "Dữ liệu không hợp lệ: " + errorMessage,
+//                        null
+//                );
+//                return ResponseEntity.badRequest().body(response);
+//            }
+//
+//            Product savedProduct = iProductService.saveProduct(product);
+//
+//            if (savedProduct != null) {
+//                ResponseData<ProductResponseDTO> response = new ResponseData<>(
+//                        HttpStatus.CREATED.value(),
+//                        "Tạo sản phẩm thành công",
+//                        ProductResponseDTO.fromProduct(savedProduct)
+//                );
+//                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//            } else {
+//                ResponseData<ProductResponseDTO> response = new ResponseData<>(
+//                        HttpStatus.CONFLICT.value(),
+//                        "Tên sản phẩm '" + product.getName() + "' đã tồn tại",
+//                        null
+//                );
+//                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+//            }
+//        } catch (Exception e) {
+//            ResponseData<ProductResponseDTO> response = new ResponseData<>(
+//                    HttpStatus.BAD_REQUEST.value(),
+//                    e.getMessage(),
+//                    null
+//            );
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseData<ProductResponseDTO>> saveProduct(
-            @Valid @RequestBody ProductRequestDTO product,
-            BindingResult bindingResult) {
+            @RequestPart("product") @Valid ProductRequestDTO productRequest,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
+            BindingResult bindingResult
+    ) {
         try {
+            // Validate data
             if (bindingResult.hasErrors()) {
                 String errorMessage = bindingResult.getFieldErrors()
                         .stream()
@@ -100,35 +150,25 @@ public class ProductController {
                 ResponseData<ProductResponseDTO> response = new ResponseData<>(
                         HttpStatus.BAD_REQUEST.value(),
                         "Dữ liệu không hợp lệ: " + errorMessage,
-                        null
-                );
+                        null);
+
                 return ResponseEntity.badRequest().body(response);
-            }
 
-            Product savedProduct = iProductService.saveProduct(product);
-
-            if (savedProduct != null) {
-                ResponseData<ProductResponseDTO> response = new ResponseData<>(
-                        HttpStatus.CREATED.value(),
-                        "Tạo sản phẩm thành công",
-                        ProductResponseDTO.fromProduct(savedProduct)
-                );
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
-                ResponseData<ProductResponseDTO> response = new ResponseData<>(
-                        HttpStatus.CONFLICT.value(),
-                        "Tên sản phẩm '" + product.getName() + "' đã tồn tại",
-                        null
-                );
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             }
-        } catch (Exception e) {
-            ResponseData<ProductResponseDTO> response = new ResponseData<>(
-                    HttpStatus.BAD_REQUEST.value(),
-                    e.getMessage(),
-                    null
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageUrl = fileStorageService.store(imageFile);
+                productRequest.setImage_url(imageUrl);
+            }
+            Product savedProduct = productService.saveProduct(productRequest);
+            return ResponseEntity.ok(new ResponseData<>(
+                    HttpStatus.OK.value(),
+                    "Tạo sản phẩm thành công",
+                    ProductResponseDTO.fromProduct(savedProduct)
+            ));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    new ResponseData<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null)
             );
-            return ResponseEntity.badRequest().body(response);
         }
     }
 
