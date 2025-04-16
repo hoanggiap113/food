@@ -1,11 +1,14 @@
 package com.food.controllers;
 
 import com.food.dto.request.UserRequestDTO;
+import com.food.dto.response.ApiResponse;
 import com.food.dto.response.UserDetailResponse;
 import com.food.services.IUserService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +21,14 @@ public class UserController {
 
     private final IUserService userService;
 
-    @PostMapping(value = "/adduser")
-    public Long addUser(@RequestBody UserRequestDTO user) {
-        log.info("Request add user, {}", user.getName());
+    @PostMapping("/adduser")
+    public ResponseEntity<ApiResponse<UserDetailResponse>> addUser(@RequestBody UserRequestDTO user) {
+        log.info("Request add user: {}", user.getName());
 
-        long userId = userService.saveUser(user);
-
-        return userId;
+        UserDetailResponse response = userService.saveUser(user);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(response));
     }
 
     @DeleteMapping(value = "/{userId}")

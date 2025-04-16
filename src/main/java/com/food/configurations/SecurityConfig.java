@@ -1,10 +1,10 @@
 package com.food.configurations;
 
-import com.food.dto.response.UserDetailResponse;
+import com.food.security.JwtAuthenticationEntryPoint;
 import com.food.security.JwtFilter;
-import com.food.services.IUserService;
 import com.food.services.JwtService;
 import com.food.services.IUserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,37 +24,48 @@ import java.util.Collections;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Getter
+
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final JwtService jwtService;
     private final IUserService userService;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)  // <-- xử lý lỗi xác thực tại đây
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user/**","/product/**").hasRole("ADMIN") // Chỉ ADMIN truy cập /user/**
+                        .requestMatchers("/user/**", "/product/**").hasRole("admin")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/auth/login")
+                        .loginPage("/auth/oauth2-login")
                         .successHandler((request, response, authentication) -> {
-                            DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-                            String email = oidcUser.getEmail();
-                            String name = oidcUser.getName();
-                            UserDetailResponse user = userService.saveOrUpdateGoogleUser(email, name);
-                            String jwt = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
+                            var oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+                            var email = oidcUser.getEmail();
+                            var name = oidcUser.getName();
+                            var user = userService.saveOrUpdateGoogleUser(email, name);
+                            var jwt = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
                             response.sendRedirect("/auth/google-callback?token=" + jwt);
                         })
                         .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("/auth/login-error?error=" + URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8));
+                            response.setContentType("application/json");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            String json = String.format("{\"error\": \"Google login failed\", \"message\": \"%s\"}", exception.getMessage());
+                            response.getWriter().write(json);
                         })
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
+
+
 

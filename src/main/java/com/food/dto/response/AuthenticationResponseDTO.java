@@ -11,5 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuthenticationResponseDTO {
     private String token;
-    private boolean authenticated;
+    private String email;
+    private String role;
+    private long expiresIn; // Thời gian hết hạn của token (giây)
+
 }

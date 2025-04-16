@@ -6,16 +6,20 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
-    USER_EXISTED(1002, "User existed", HttpStatus.BAD_REQUEST),
-    USERNAME_INVALID(1003, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    INVALID_PASSWORD(1004, "Password must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),
-    UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
-    INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    ;
+    UNCATEGORIZED_EXCEPTION(9999, "An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNAUTHENTICATED(1006, "Email hoặc mật khẩu không chính xác", HttpStatus.UNAUTHORIZED),
+    INVALID_EMAIL(1009, "Email không tồn tại", HttpStatus.UNAUTHORIZED),
+    WRONG_PASSWORD(1011, "Mật khẩu sai", HttpStatus.UNAUTHORIZED),
+    EMAIL_ALREADY_EXISTS(1012, "Email đã tồn tại", HttpStatus.BAD_REQUEST),
+    FIELD_REQUIRED(1013, "Trường %s là bắt buộc", HttpStatus.BAD_REQUEST),  // Thêm để xử lý lỗi field
+    ROLE_NOT_FOUND(1003, "Default role not found", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_OR_EXPIRED_TOKEN(40101, "Invalid or expired token", HttpStatus.UNAUTHORIZED),
+    TOKEN_PROCESSING_FAILED(50001, "Could not process token", HttpStatus.INTERNAL_SERVER_ERROR);
+
+
+    private final int code;
+    private final String message;
+    private final HttpStatusCode statusCode;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
@@ -23,7 +27,7 @@ public enum ErrorCode {
         this.statusCode = statusCode;
     }
 
-    private final int code;
-    private final String message;
-    private final HttpStatusCode statusCode;
+    public String getFormattedMessage(Object... args) {
+        return String.format(this.message, args);
+    }
 }

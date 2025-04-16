@@ -3,13 +3,14 @@ package com.food.services;
 import com.food.dto.request.AuthenticationRequestDTO;
 import com.food.dto.request.UserRequestDTO;
 import com.food.dto.response.UserDetailResponse;
+import com.food.model.entities.User;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.List;
 
 public interface IUserService {
 
-    long  saveUser(UserRequestDTO request);
+    UserDetailResponse saveUser(UserRequestDTO request);
 
     void updateUser(long userId, UserRequestDTO request);
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -28,13 +29,16 @@ public class JwtService {
     public String generateToken(String username, List<String> roles) {
         Instant now = Instant.now();
         Instant expiry = now.plus(ttl);
+        List<String> modifiedRoles = roles.stream()
+                .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
+                .collect(Collectors.toList());
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(appName)
                 .issuedAt(now)
                 .expiresAt(expiry)
                 .subject(username)
-                .claim("roles", roles)
+                .claim("roles", modifiedRoles)
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

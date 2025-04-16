@@ -3,6 +3,7 @@ package com.food.services.impl;
 import com.food.dto.request.AuthenticationRequestDTO;
 import com.food.dto.request.UserRequestDTO;
 import com.food.dto.response.UserDetailResponse;
+import com.food.exception.ErrorCode;
 import com.food.model.entities.Role;
 import com.food.model.entities.User;
 import com.food.repositories.RoleRepository;
@@ -30,27 +31,39 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public long saveUser(UserRequestDTO request) {
+    public UserDetailResponse saveUser(UserRequestDTO request) {
         if (isEmailExist(request.getEmail())) {
-            return 0;
+            throw new ResponseStatusException(
+                    ErrorCode.EMAIL_ALREADY_EXISTS.getStatusCode(),
+                    ErrorCode.EMAIL_ALREADY_EXISTS.getMessage()
+            );
         }
 
         Role role = roleRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Role with ID 1 (USER) not found"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        ErrorCode.ROLE_NOT_FOUND.getStatusCode(),
+                        ErrorCode.ROLE_NOT_FOUND.getMessage()
+                ));
 
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .phone(request.getPhone())
                 .address(request.getAddress())
-                .password(passwordEncoder.encode(request.getPassword())) // Mã hóa password
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
 
         userRepository.save(user);
 
-        log.info("User has saved!");
-        return user.getId();
+        return UserDetailResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .role(role.getName())
+                .build();
     }
 
     @Override
@@ -71,7 +84,6 @@ public class UserService implements IUserService {
                         .name(user.getName())
                         .phone(user.getPhone())
                         .email(user.getEmail())
-                        .password(user.getPassword())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -84,7 +96,6 @@ public class UserService implements IUserService {
                         .name(user.getName())
                         .phone(user.getPhone())
                         .email(user.getEmail())
-                        .password(user.getPassword())
                         .address(user.getAddress())
                         .build())
                 .orElse(null);
@@ -97,34 +108,40 @@ public class UserService implements IUserService {
 
     @Override
     public UserDetailResponse authenticate(AuthenticationRequestDTO request) {
-
+        log.info("Authenticating user with email: {}", request.getEmail());
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if (userOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tài khoản không tồn tại");
+            log.warn("Authentication failed: User not found for email {}", request.getEmail());
+            throw new ResponseStatusException(ErrorCode.UNAUTHENTICATED.getStatusCode(), ErrorCode.UNAUTHENTICATED.getMessage());
         }
 
         User user = userOptional.get();
 
         if (!passwordEncoder.matches(request.getPassWord(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Mật khẩu không đúng");
+            log.warn("Authentication failed: Incorrect password for email {}", request.getEmail());
+            throw new ResponseStatusException(ErrorCode.UNAUTHENTICATED.getStatusCode(), ErrorCode.UNAUTHENTICATED.getMessage());
         }
 
+        log.info("Authentication successful for email: {}", request.getEmail());
+
         return UserDetailResponse.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole().getName())
                 .build();
     }
 
+
     @Override
     public UserDetailResponse saveOrUpdateGoogleUser(String email, String name) {
-
+        // Kiểm tra xem email đã tồn tại chưa
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         User user;
         if (existingUser.isPresent()) {
-
+            // Nếu user đã tồn tại, cập nhật tên nếu cần
             user = existingUser.get();
             if (!user.getName().equals(name)) {
                 user.setName(name);
@@ -132,7 +149,7 @@ public class UserService implements IUserService {
                 log.info("Updated Google user with email: {}", email);
             }
         } else {
-
+            // Nếu user chưa tồn tại, tạo mới
             Role role = roleRepository.findById(1L)
                     .orElseThrow(() -> new RuntimeException("Role with ID 1 (USER) not found"));
 
@@ -147,6 +164,7 @@ public class UserService implements IUserService {
             log.info("Saved new Google user with email: {}", email);
         }
 
+        // Trả về thông tin user để tạo JWT
         return UserDetailResponse.builder()
                 .id(user.getId())
                 .name(user.getName())

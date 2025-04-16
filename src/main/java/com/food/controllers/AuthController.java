@@ -2,18 +2,24 @@ package com.food.controllers;
 
 import com.food.dto.request.AuthenticationRequestDTO;
 import com.food.dto.request.UserRequestDTO;
+import com.food.dto.response.ApiResponse;
 import com.food.dto.response.AuthenticationResponseDTO;
 import com.food.dto.response.UserDetailResponse;
 import com.food.services.JwtService;
 import com.food.services.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.food.exception.ErrorCode;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
+import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -28,40 +34,70 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequestDTO request) {
-        long check = userService.saveUser(request);
-        if (check != 0) return ResponseEntity.ok("User registered successfully");
-        else return ResponseEntity.badRequest().body("Email already exist");
+    public ResponseEntity<ApiResponse<UserDetailResponse>> register(@RequestBody UserRequestDTO request) {
+        log.info("Request to register user: {}", request.getEmail());
+
+        UserDetailResponse userDetail = userService.saveUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(userDetail));
     }
+
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO request) {
-        try {
-            UserDetailResponse user = userService.authenticate(request);
-            String token = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
-            return ResponseEntity.ok(new AuthenticationResponseDTO(token, true));
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống khi đăng nhập");
-        }
+    public ResponseEntity<ApiResponse<AuthenticationResponseDTO>> login(@Valid @RequestBody AuthenticationRequestDTO request) {
+        UserDetailResponse user = userService.authenticate(request);
+        String token = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
+        AuthenticationResponseDTO responseDTO = new AuthenticationResponseDTO(
+                token,
+                user.getEmail(),
+                user.getRole(),
+                3600
+        );
+        return ResponseEntity.ok(ApiResponse.success(responseDTO));
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<?> loginPage() {
-        return ResponseEntity.ok("{\"message\": \"Vui lòng đăng nhập\", \"loginUrl\": \"/auth/login\", \"googleLoginUrl\": \"/oauth2/authorization/google\"}");
-    }
+    @GetMapping("/oauth2-login")
+    public ResponseEntity<ApiResponse<?>> loginError(
+            @RequestParam(value = "error", required = false) String error) {
 
-    @GetMapping("/login-error")
-    public ResponseEntity<?> loginError(@RequestParam(value = "error", required = false) String error) {
         if (error != null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Google login failed");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(
+                            ErrorCode.UNAUTHENTICATED.getCode(),
+                            "Google login failed",
+                            HttpStatus.UNAUTHORIZED.value()));
         }
-        return ResponseEntity.ok("Please login");
+
+        return ResponseEntity.ok(ApiResponse.success("Please login"));
     }
+
 
     @GetMapping("/google-callback")
-    public ResponseEntity<?> googleCallback(@RequestParam("token") String token) {
-        return ResponseEntity.ok(new AuthenticationResponseDTO(token, true));
+    public ResponseEntity<ApiResponse<?>> googleCallback(@RequestParam("token") String token) {
+
+        if (!jwtService.validateToken(token)) {
+            throw new ResponseStatusException(
+                    ErrorCode.INVALID_OR_EXPIRED_TOKEN.getStatusCode(),
+                    ErrorCode.INVALID_OR_EXPIRED_TOKEN.getMessage()
+            );
+        }
+
+        try {
+            String email = jwtService.getUsernameFromToken(token);
+            List<String> roles = jwtService.getRolesFromToken(token);
+            String role = roles.isEmpty() ? "USER" : roles.get(0);
+
+            AuthenticationResponseDTO responseDTO = new AuthenticationResponseDTO(
+                    token, email, role, 3600
+            );
+
+            return ResponseEntity.ok(ApiResponse.success(responseDTO));
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    ErrorCode.TOKEN_PROCESSING_FAILED.getStatusCode(),
+                    ErrorCode.TOKEN_PROCESSING_FAILED.getMessage()
+            );
+        }
     }
+
 }
