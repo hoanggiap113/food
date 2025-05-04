@@ -16,7 +16,7 @@ Một dự án web giao hàng đồ ăn, lấy cảm hứng từ các nền tả
 
 ## 📊 Công Nghệ Sử Dụng
 
-- **Frontend**: React.js + Tailwind CSS
+- **Frontend**: React.js
 - **Backend**: Java Spring Boot
 - **Database**: MySQL
 - **Authentication**: JWT (JSON Web Tokens)
@@ -72,8 +72,8 @@ npm run dev
 
 ## 👨‍💻 Tác Giả
 
-- Tên: [Tên của bạn]
-- Email: [email của bạn]
+- Tên: Hoàng Nguyên Giáp,Lê Việt Hoàng.
+- Email: hoangnguyengiap04@gmail.com
 
 ---
 

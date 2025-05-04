@@ -3,20 +3,23 @@ package com.food.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
-@Builder
-@Table(name="roles")
-@AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+@AllArgsConstructor
+@Entity
+@Table(name = "roles")
+public class Role{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name")
+    @Column(nullable = false, unique = true)
     private String name;
 
-
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<User> users = new ArrayList<>();
 }
