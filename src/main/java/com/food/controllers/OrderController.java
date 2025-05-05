@@ -40,5 +40,30 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    //Chỉnh sửa trạng thái đơn hàng(Cho admin)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateOrder(@Valid @RequestBody OrderDTO orderDTO, @Valid @PathVariable("id") Long orderId) {
+        try{
+            Order order = orderService.updateOrder(orderId,orderDTO);
+            return ResponseEntity.ok(order);
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@Valid @PathVariable("id") Long orderId) throws Exception {
+        orderService.deleteOrder(orderId); //Xóa mềm => chỉnh trạng thái sang false
+        return ResponseEntity.ok("Order deleted");
+    }
 
+    //Lấy danh sách đơn hàng đã mua
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<?> getOrders(@Valid @PathVariable Long user_id) {
+        try{
+            List<Order> orders = orderService.findByUserId(user_id);
+            return ResponseEntity.ok(orders);
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
