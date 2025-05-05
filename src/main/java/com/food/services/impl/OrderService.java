@@ -11,8 +11,11 @@ import com.food.repositories.VoucherRepository;
 import com.food.services.IOrderService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +23,9 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final VoucherRepository voucherRepository;
+    private final ModelMapper modelMapper;
     @Override
     public Order getOrderById(Long id) {
-
         return orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find Order with id: " + id));
     }
     @Override
@@ -39,4 +42,28 @@ public class OrderService implements IOrderService {
                 .build();
         return orderRepository.save(order);
     }
+
+    @Override
+    public Order updateOrder(Long id,OrderDTO orderDTO) throws Exception {
+        Order existingOrder = orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
+        User existingUser = userRepository.findById((orderDTO.getUserId())).orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDTO.getUserId()));
+        modelMapper.map(orderDTO, existingOrder);
+        existingOrder.setUser(existingUser);
+        return orderRepository.save(existingOrder);
+    }
+
+    @Override
+    public void deleteOrder(Long id) throws Exception {
+        Order existingOrder = orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
+        if(existingOrder != null){
+            existingOrder.setActive(false);
+            orderRepository.save(existingOrder);
+        }
+    }
+
+    @Override
+    public List<Order> findByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
 }
