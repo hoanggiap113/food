@@ -1,20 +1,26 @@
 package com.food.model.entities;
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Entity
 @Table(name="categories")
-public class Category extends AbstractEntity{
+@Entity
+public class Category extends BaseEntity {
 
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "categoryId",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Product> products = new ArrayList<>();
+    @Column(name = "description")
+    private String description;
+
+    @OneToMany(mappedBy = "category",cascade = {CascadeType.DETACH,CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE},orphanRemoval = true)
+    @JsonIgnore
+    private List<Product> products;
 }

@@ -1,31 +1,38 @@
 package com.food.services.impl;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.food.customexceptions.DataNotFoundException;
 import com.food.model.entities.Category;
 import com.food.model.entities.Product;
-import com.food.model.request.ProductRequestDTO;
-import com.food.model.response.ProductResponse;
+import com.food.dto.ProductRequestDTO;
+import com.food.response.ProductResponseDTO;
 import com.food.repositories.CategoryRepository;
 import com.food.repositories.ProductRepository;
 import com.food.services.IProductService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.stream.*;
 import java.util.List;
-
 @Service
-@RequiredArgsConstructor
 public class ProductService implements IProductService {
-
+    @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<ProductResponse> getAll() {
-        List<ProductResponse> results = productRepository.findAll().stream().map((Product product) -> ProductResponse.fromProduct(product)).collect(Collectors.toList());
+    public List<ProductResponseDTO> getAll() {
+        List<ProductResponseDTO> results = productRepository.findAll().stream().map(ProductResponseDTO::fromProduct).collect(Collectors.toList());
         return results;
+    }
+
+    @Override
+    public Page<ProductResponseDTO> getAllProduct(PageRequest pageRequest) {
+        return productRepository.findAll(pageRequest).map(ProductResponseDTO::fromProduct);
     }
 
     @Override
@@ -46,7 +53,7 @@ public class ProductService implements IProductService {
                     .quantity(body.getQuantity())
                     .status("available")
                     .type(body.getType().stream().collect(Collectors.joining(",")))
-                    .categoryId(existingCategory)
+                    .category(existingCategory)
                     .build();
             return productRepository.save(productNew);
         }else{
@@ -66,6 +73,7 @@ public class ProductService implements IProductService {
             existingProduct.setImageUrl(body.getImage_url());
             existingProduct.setQuantity(body.getQuantity());
             existingProduct.setType(body.getType().stream().collect(Collectors.joining(",")));
+            existingProduct.setUpdatedAt(LocalDateTime.now());
         return productRepository.save(existingProduct);
         }
         return null;
@@ -73,9 +81,9 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(Long id) throws Exception {
-        Optional<Product> product = productRepository.findById(id);
-        if(product.isPresent()) {
-            productRepository.delete(product.get());
+        Optional<Product> productEntity = productRepository.findById(id);
+        if(productEntity.isPresent()) {
+            productRepository.delete(productEntity.get());
         }
     }
 

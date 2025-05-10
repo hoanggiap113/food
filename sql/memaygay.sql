@@ -40,7 +40,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Món Việt','Các món ăn truyền thống Việt Nam','2025-04-12 12:06:35','2025-04-12 12:06:35'),(2,'Đồ nướng','Các món nướng thơm ngon','2025-04-12 12:06:35','2025-04-12 12:06:35'),(3,'Món chay','Dành cho người ăn chay','2025-04-12 12:06:35','2025-04-12 12:06:35'),(4,'Tráng miệng','Các món ngọt tráng miệng','2025-04-12 12:06:35','2025-04-12 12:06:35'),(5,'Đồ uống đặc biệt','Các loại đồ uống đặc sản','2025-04-12 12:06:35','2025-04-12 12:06:35'),(6,'Fast Food','Quick and delicious meals','2025-04-12 12:06:35','2025-04-12 12:06:35'),(7,'Beverages','Refreshing drinks','2025-04-12 12:06:35','2025-04-12 12:06:35'),(8,'Soda','Drink','2025-04-12 12:06:35','2025-04-12 12:06:35');
+INSERT INTO `categories` VALUES (1,'Món Việt','Các món ăn truyền thống Việt Nam','2025-04-12 12:06:35','2025-04-12 12:06:35'),(2,'Đồ nướng','Các món nướng thơm ngon','2025-04-12 12:06:35','2025-04-12 12:06:35'),(3,'Món chay','Dành cho người ăn chay','2025-04-12 12:06:35','2025-04-12 12:06:35'),(4,'Tráng miệng','Các món ngọt tráng miệng','2025-04-12 12:06:35','2025-04-12 12:06:35'),(5,'Đồ uống đặc biệt','Các loại đồ uống đặc sản','2025-04-12 12:06:35','2025-04-12 12:06:35'),(6,'Đồ ăn nhanh','Các loại đồ ăn nhanh','2025-04-12 12:06:35','2025-04-14 08:56:18'),(7,'Nước ngọt','Các loại nước ngọt','2025-04-12 12:06:35','2025-04-14 08:56:18'),(8,'Nước có ga','Các loại nước có ga phổ biến','2025-04-12 12:06:35','2025-04-14 08:56:18');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,6 +91,10 @@ CREATE TABLE `orders` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `voucher_id` int DEFAULT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `address` varchar(120) DEFAULT NULL,
+  `note` varchar(200) DEFAULT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `fk_voucher` (`voucher_id`),
@@ -105,7 +109,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,1,'pending',120000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',NULL),(2,2,'confirmed',95000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',1),(3,3,'delivered',150000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',NULL),(4,4,'pending',80000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',2),(5,5,'canceled',65000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',NULL),(6,1,'confirmed',110000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',3),(7,2,'delivered',75000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',NULL),(8,3,'pending',90000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',4),(9,4,'confirmed',130000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',NULL),(10,5,'delivered',70000.00,'2025-04-12 12:06:35','2025-04-12 12:06:35',5);
+INSERT INTO `orders` VALUES (1,1,'pending',120000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van A','Ha NOi',NULL,'0123456789'),(2,2,'confirmed',95000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',1,'Van B','Ha noi',NULL,'0987654321'),(3,3,'delivered',150000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van C','Ha noi',NULL,'0912345678'),(4,4,'pending',80000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',2,'Van D','Ha noi',NULL,'0978123456'),(5,5,'canceled',65000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van E','Ha noi',NULL,'0965432187'),(6,1,'confirmed',110000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',3,'Van A','Ha noi',NULL,'0123456789'),(7,2,'delivered',75000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van B','Ha noi',NULL,'0987654321'),(8,3,'pending',90000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',4,'Your mum','Ha noi',NULL,'0912345678'),(9,4,'confirmed',130000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Skibidi','Ha noi',NULL,'0978123456'),(10,5,'delivered',70000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',5,'Toilet','Ha noi',NULL,'0965432187');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,7 +282,6 @@ CREATE TABLE `vouchers` (
   `discount_percent` decimal(5,2) DEFAULT NULL,
   `valid_from` date NOT NULL,
   `valid_to` date NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`),
   CONSTRAINT `vouchers_chk_1` CHECK (((`discount_percent` >= 0) and (`discount_percent` <= 100)))
@@ -291,7 +294,7 @@ CREATE TABLE `vouchers` (
 
 LOCK TABLES `vouchers` WRITE;
 /*!40000 ALTER TABLE `vouchers` DISABLE KEYS */;
-INSERT INTO `vouchers` VALUES (1,'VIETFOOD20',20.00,'2025-04-01','2025-06-30','2025-04-12 12:06:35'),(2,'HOTMEAL15',15.00,'2025-05-01','2025-07-31','2025-04-12 12:06:35'),(3,'NEWCUS10',10.00,'2025-01-01','2025-12-31','2025-04-12 12:06:35'),(4,'SPECIAL25',25.00,'2025-04-15','2025-05-15','2025-04-12 12:06:35'),(5,'WEEKEND30',30.00,'2025-04-01','2025-12-31','2025-04-12 12:06:35');
+INSERT INTO `vouchers` VALUES (1,'VIETFOOD20',20.00,'2025-04-01','2025-06-30'),(2,'HOTMEAL15',15.00,'2025-05-01','2025-07-31'),(3,'NEWCUS10',10.00,'2025-01-01','2025-12-31'),(4,'SPECIAL25',25.00,'2025-04-15','2025-05-15'),(5,'WEEKEND30',30.00,'2025-04-01','2025-12-31');
 /*!40000 ALTER TABLE `vouchers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -304,4 +307,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-13 21:33:39
+-- Dump completed on 2025-04-15 15:23:37
