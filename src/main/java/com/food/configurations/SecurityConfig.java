@@ -16,8 +16,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Configuration
@@ -52,7 +50,11 @@ public class SecurityConfig {
                             var email = oidcUser.getEmail();
                             var name = oidcUser.getName();
                             var user = userService.saveOrUpdateGoogleUser(email, name);
-                            var jwt = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
+                            var jwt = jwtService.generateToken(
+                                    String.valueOf(user.getId()),
+                                    user.getEmail(),
+                                    Collections.singletonList(user.getRole())
+                            );
                             response.sendRedirect("/auth/google-callback?token=" + jwt);
                         })
                         .failureHandler((request, response, exception) -> {

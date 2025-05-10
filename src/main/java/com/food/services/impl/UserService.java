@@ -89,7 +89,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDetailResponse getUser(long userId) {
+    public UserDetailResponse getUserById(long userId) {
         return userRepository.findById(userId)
                 .map(user -> UserDetailResponse.builder()
                         .id(user.getId())

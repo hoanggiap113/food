@@ -3,14 +3,15 @@ package com.food.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
+@Getter
+@Setter
 @Table(name="products")
-public class Product extends AbstractEntity{
+
+public class Product extends BaseEntity {
 
     @Column(name ="name",nullable = false,length = 300)
     private String name;
@@ -29,11 +30,12 @@ public class Product extends AbstractEntity{
 
     @Column(name="status")
     private String status;
-
+    
     @Column(name="type")
     private String type;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category categoryId;
+    @JoinColumn(name = "category_id")
+    Category category;
+
 }

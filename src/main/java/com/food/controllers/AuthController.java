@@ -39,21 +39,26 @@ public class AuthController {
 
         UserDetailResponse userDetail = userService.saveUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(userDetail));
+                .body(ApiResponse.success(userDetail, "Registration success fully"));
     }
 
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthenticationResponseDTO>> login(@Valid @RequestBody AuthenticationRequestDTO request) {
         UserDetailResponse user = userService.authenticate(request);
-        String token = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
+        String token = jwtService.generateToken(
+                user.getId().toString(),
+                user.getEmail(),
+                Collections.singletonList(user.getRole())
+        );
+
         AuthenticationResponseDTO responseDTO = new AuthenticationResponseDTO(
                 token,
                 user.getEmail(),
                 user.getRole(),
                 3600
         );
-        return ResponseEntity.ok(ApiResponse.success(responseDTO));
+        return ResponseEntity.ok(ApiResponse.success(responseDTO, "Login success fully"));
     }
 
     @GetMapping("/oauth2-login")
@@ -68,7 +73,7 @@ public class AuthController {
                             HttpStatus.UNAUTHORIZED.value()));
         }
 
-        return ResponseEntity.ok(ApiResponse.success("Please login"));
+        return ResponseEntity.ok(ApiResponse.success("Data not found", "Please Login"));
     }
 
 
@@ -91,7 +96,7 @@ public class AuthController {
                     token, email, role, 3600
             );
 
-            return ResponseEntity.ok(ApiResponse.success(responseDTO));
+            return ResponseEntity.ok(ApiResponse.success(responseDTO, "Login google success fully"));
         } catch (Exception e) {
             throw new ResponseStatusException(
                     ErrorCode.TOKEN_PROCESSING_FAILED.getStatusCode(),

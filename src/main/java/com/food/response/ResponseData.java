@@ -1,4 +1,4 @@
-package com.food.model.response;
+package com.food.response;
 
 import lombok.Getter;
 import lombok.Setter;

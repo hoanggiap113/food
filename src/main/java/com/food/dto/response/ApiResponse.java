@@ -1,5 +1,6 @@
 package com.food.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,15 +9,18 @@ import java.util.Map;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
     private String status;
+    private String message;
     private T data;
     private Map<String, Object> error;
 
-    public static <T> ApiResponse<T> success(T data) {
+    public static <T> ApiResponse<T> success(T data, String message) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setStatus("success");
         response.setData(data);
+        response.setMessage(message);
         return response;
     }
 
