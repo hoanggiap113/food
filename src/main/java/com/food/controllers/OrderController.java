@@ -50,6 +50,8 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    //Admin xoa don hang
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@Valid @PathVariable("id") Long orderId) throws Exception {
         orderService.deleteOrder(orderId); //Xóa mềm => chỉnh trạng thái sang false

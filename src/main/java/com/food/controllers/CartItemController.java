@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.food.dto.CartItemDTO;
 import com.food.model.entities.CartItem;
-import com.food.model.entities.Product;
 import com.food.services.impl.CartItemService;
 import com.food.services.impl.ProductService;
 import jakarta.validation.Valid;

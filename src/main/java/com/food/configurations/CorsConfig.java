@@ -12,7 +12,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Áp dụng cho tất cả API
-                        .allowedOrigins("http://127.0.0.1:5500") // Hoặc "*"
+                        .allowedOrigins("http://127.0.0.1:3000") // Hoặc "*"
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Các phương thức cho phép
                         .allowCredentials(true);
             }

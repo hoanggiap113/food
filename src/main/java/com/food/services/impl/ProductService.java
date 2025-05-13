@@ -48,10 +48,7 @@ public class ProductService implements IProductService {
             Product productNew = Product.builder()
                     .name(body.getName())
                     .description(body.getDescription())
-                    .price(body.getPrice())
                     .imageUrl(body.getImage_url())
-                    .quantity(body.getQuantity())
-                    .status("available")
                     .type(body.getType().stream().collect(Collectors.joining(",")))
                     .category(existingCategory)
                     .build();
@@ -69,11 +66,8 @@ public class ProductService implements IProductService {
                     new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
             existingProduct.setName(body.getName());
             existingProduct.setDescription(body.getDescription());
-            existingProduct.setPrice(body.getPrice());
             existingProduct.setImageUrl(body.getImage_url());
-            existingProduct.setQuantity(body.getQuantity());
             existingProduct.setType(body.getType().stream().collect(Collectors.joining(",")));
-            existingProduct.setUpdatedAt(LocalDateTime.now());
         return productRepository.save(existingProduct);
         }
         return null;

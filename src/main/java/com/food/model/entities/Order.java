@@ -34,7 +34,7 @@ public class Order extends BaseEntity{
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.REMOVE,CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="voucher_id")
     private Voucher voucher;
 
