@@ -24,25 +24,19 @@ DROP TABLE IF EXISTS `cart`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
+  `user_id` int NULL,
+  `session_id` varchar(255) NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `cart`
 --
-
-LOCK TABLES `cart` WRITE;
-/*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,'2025-04-15 03:00:00','2025-04-15 03:00:00'),(2,2,'2025-04-15 03:05:00','2025-04-15 03:05:00'),(3,3,'2025-04-15 03:10:00','2025-04-15 03:10:00'),(4,4,'2025-04-15 03:15:00','2025-04-15 03:15:00'),(5,5,'2025-04-15 03:20:00','2025-04-15 03:20:00');
-/*!40000 ALTER TABLE `cart` ENABLE KEYS */;
-UNLOCK TABLES;
-
 --
 -- Table structure for table `cart_items`
 --
@@ -63,18 +57,12 @@ CREATE TABLE `cart_items` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
   CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `cart_items`
 --
-
-LOCK TABLES `cart_items` WRITE;
-/*!40000 ALTER TABLE `cart_items` DISABLE KEYS */;
-INSERT INTO `cart_items` VALUES (1,1,1,2,'2025-04-15 03:00:00','2025-04-15 16:48:52',1000000.00),(2,1,3,1,'2025-04-15 03:00:00','2025-04-15 16:48:52',75000.00),(3,1,6,3,'2025-04-15 03:01:00','2025-04-15 16:48:52',60000.00),(4,2,2,1,'2025-04-15 03:05:00','2025-04-15 16:48:52',25000.00),(5,2,5,2,'2025-04-15 03:06:00','2025-04-15 16:48:52',90000.00),(6,3,7,1,'2025-04-15 03:10:00','2025-04-15 16:48:52',25000.00),(7,3,8,2,'2025-04-15 03:11:00','2025-04-15 16:48:52',60000.00),(8,4,10,1,'2025-04-15 03:15:00','2025-04-15 16:48:52',40000.00),(9,4,12,1,'2025-04-15 03:16:00','2025-04-15 16:48:52',55000.00),(10,5,9,2,'2025-04-15 03:20:00','2025-04-15 16:48:52',60000.00),(11,5,14,1,'2025-04-15 03:21:00','2025-04-15 16:48:52',25000.00);
-/*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `categories`
