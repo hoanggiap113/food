@@ -1,5 +1,4 @@
 package com.food.services.impl;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import com.food.customexceptions.DataNotFoundException;
@@ -7,7 +6,7 @@ import com.food.model.entities.Category;
 import com.food.model.entities.Product;
 import com.food.dto.ProductRequestDTO;
 import com.food.response.ProductResponseDTO;
-import com.food.repositories.CategoryRepository;
+import com.food.repositories.CategoriesRepository;
 import com.food.repositories.ProductRepository;
 import com.food.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class ProductService implements IProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoriesRepository categoriesRepository;
 
     @Override
     public List<ProductResponseDTO> getAll() {
@@ -42,7 +41,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Product saveProduct(ProductRequestDTO body) throws Exception {
-        Category existingCategory = categoryRepository.findById(body.getCategory_id()).orElseThrow(() -> new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
+        Category existingCategory = categoriesRepository.findById(body.getCategory_id()).orElseThrow(() -> new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
         Product productEntity = productRepository.findByName(body.getName());
         if(body.getName() != null && !body.getName().isEmpty() && productEntity == null) {
             Product productNew = Product.builder()
@@ -62,7 +61,7 @@ public class ProductService implements IProductService {
     public Product updateProduct(ProductRequestDTO body, Long id) throws Exception {
         Product existingProduct = getProductById(id);
         if(existingProduct != null) {
-            Category existingCategory = categoryRepository.findById(body.getCategory_id()).orElseThrow(() ->
+            Category existingCategory = categoriesRepository.findById(body.getCategory_id()).orElseThrow(() ->
                     new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
             existingProduct.setName(body.getName());
             existingProduct.setDescription(body.getDescription());

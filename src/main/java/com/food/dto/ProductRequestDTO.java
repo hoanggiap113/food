@@ -17,14 +17,10 @@ public class ProductRequestDTO {
         @NotBlank(message = "Product name required")
         private String name;
         private String description;
-        @Min(value=0,message = "price must be greater than 0")
-        private Double price;
         @Size(max = 500, message = "Image URL must be less than 500 characters")
         private String image_url;
         @NotNull(message = "Category ID is required")
         private Long category_id;
-        private Long quantity;
         private List<String> type;
-
 
 }

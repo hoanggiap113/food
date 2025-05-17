@@ -1,6 +1,7 @@
 package com.food.response;
 import com.food.model.entities.BaseEntity;
 import com.food.model.entities.Product;
+import com.food.model.entities.ProductDetails;
 import lombok.*;
 
 @Getter
@@ -15,14 +16,14 @@ public class ProductResponseDTO extends BaseEntity {
     private String image_url;
     private Long quantity;
     private String category_name;
-
-    public static ProductResponseDTO fromProduct(Product product){
+    private String type;
+    public static ProductResponseDTO fromProduct(ProductDetails product){
         ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
-                .name(product.getName())
-                .description(product.getDescription())
+                .name(product.getProduct().getName())
+                .description(product.getStatus())
                 .price(product.getPrice())
-                .image_url(product.getImageUrl())
-                .category_name(product.getCategory().getName())
+                .image_url(product.getProduct().getImageUrl())
+                .category_name(product.getProduct().getCategory().getName())
                 .quantity(product.getQuantity())
                 .build();
         return productResponseDTO;
