@@ -109,7 +109,7 @@ public class ProductService implements IProductService {
 
         Product existingProduct = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Product not found"));
         String type = body.getType().stream().collect(Collectors.joining(","));
-        Category category = categoriesRepository.findById(body.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
+        Category category = categoriesRepository.findById(body.getCategoryId()).orElseThrow();
 
         existingProduct.setType(type);
         existingProduct.setCategory(category);
