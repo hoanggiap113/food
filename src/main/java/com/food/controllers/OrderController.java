@@ -2,7 +2,7 @@ package com.food.controllers;
 
 import java.util.List;
 import java.util.stream.*;
-import com.food.dto.OrderDTO;
+import com.food.request.OrderDTO;
 import com.food.model.entities.Order;
 import com.food.services.impl.OrderService;
 import jakarta.validation.Valid;

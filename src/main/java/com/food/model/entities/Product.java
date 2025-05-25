@@ -2,6 +2,7 @@ package com.food.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,10 +12,7 @@ import lombok.*;
 @Setter
 @Table(name="products")
 
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Product extends BaseEntity{
 
     @Column(name ="name",nullable = false,length = 300)
     private String name;
@@ -30,6 +28,9 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    Category category;
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductInventory> inventoryList;
 
 }

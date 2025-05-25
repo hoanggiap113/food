@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `foodorder` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `foodorder`;
--- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
 -- Host: localhost    Database: foodorder
 -- ------------------------------------------------------
--- Server version	8.0.40
+-- Server version	8.0.42
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -63,7 +63,7 @@ CREATE TABLE `order_items` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `order_items` (
 
 LOCK TABLES `order_items` WRITE;
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
-INSERT INTO `order_items` VALUES (1,1,1,2,50000.00,100000.00),(2,1,3,1,75000.00,75000.00),(3,2,2,3,25000.00,75000.00),(4,2,5,1,45000.00,45000.00),(5,3,4,4,35000.00,140000.00),(6,3,6,2,20000.00,40000.00),(7,4,7,1,25000.00,25000.00),(8,4,8,2,30000.00,60000.00),(9,5,9,3,30000.00,90000.00),(10,6,10,2,40000.00,80000.00),(11,6,11,1,35000.00,35000.00),(12,7,12,1,55000.00,55000.00),(13,7,13,2,20000.00,40000.00),(14,8,14,3,25000.00,75000.00),(15,9,15,4,20000.00,80000.00),(16,10,1,1,50000.00,50000.00),(17,10,2,2,25000.00,50000.00);
+INSERT INTO `order_items` VALUES (1,1,1,2,50000.00,100000.00),(2,1,6,1,15000.00,15000.00),(3,2,2,2,20000.00,40000.00),(4,2,7,1,25000.00,25000.00),(5,3,3,2,70000.00,140000.00),(6,4,4,1,30000.00,30000.00),(7,4,5,1,60000.00,60000.00),(8,5,9,1,30000.00,30000.00),(9,6,10,2,35000.00,70000.00),(10,6,6,2,15000.00,30000.00),(11,7,1,1,50000.00,50000.00),(12,7,7,1,25000.00,25000.00),(13,8,3,3,70000.00,210000.00),(14,9,12,1,55000.00,55000.00),(15,10,8,2,20000.00,40000.00),(16,10,11,2,22000.00,44000.00),(17,11,13,2,17000.00,34000.00),(18,12,4,1,30000.00,30000.00),(19,12,5,1,60000.00,60000.00),(20,13,15,3,18000.00,54000.00),(21,14,14,2,20000.00,40000.00),(22,15,10,1,35000.00,35000.00),(23,16,6,1,15000.00,15000.00),(24,17,11,2,22000.00,44000.00),(25,18,2,1,20000.00,20000.00),(26,19,7,2,25000.00,50000.00),(27,20,9,3,30000.00,90000.00);
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,6 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
   `status` enum('pending','confirmed','delivered','canceled') DEFAULT 'pending',
   `total_price` decimal(10,2) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -96,11 +95,9 @@ CREATE TABLE `orders` (
   `note` varchar(200) DEFAULT NULL,
   `phone_number` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
   KEY `fk_voucher` (`voucher_id`),
-  CONSTRAINT `fk_voucher` FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`id`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_voucher` FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +106,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,1,'pending',120000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van A','Ha NOi',NULL,'0123456789'),(2,2,'confirmed',95000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',1,'Van B','Ha noi',NULL,'0987654321'),(3,3,'delivered',150000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van C','Ha noi',NULL,'0912345678'),(4,4,'pending',80000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',2,'Van D','Ha noi',NULL,'0978123456'),(5,5,'canceled',65000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van E','Ha noi',NULL,'0965432187'),(6,1,'confirmed',110000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',3,'Van A','Ha noi',NULL,'0123456789'),(7,2,'delivered',75000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Van B','Ha noi',NULL,'0987654321'),(8,3,'pending',90000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',4,'Your mum','Ha noi',NULL,'0912345678'),(9,4,'confirmed',130000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',NULL,'Skibidi','Ha noi',NULL,'0978123456'),(10,5,'delivered',70000.00,'2025-04-12 12:06:35','2025-04-15 08:04:19',5,'Toilet','Ha noi',NULL,'0965432187');
+INSERT INTO `orders` VALUES (1,'pending',120000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Nguyễn Văn A','Hà Nội','','0123456789'),(2,'confirmed',85000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Trần Thị B','TP.HCM','','0987654321'),(3,'delivered',150000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Lê Văn C','Đà Nẵng','','0912345678'),(4,'delivered',95000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Phạm Thị D','Hải Phòng','','0978123456'),(5,'canceled',50000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Hoàng Văn E','Nha Trang','','0965432187'),(6,'pending',130000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Nguyễn Văn F','Huế','','0911111111'),(7,'confirmed',78000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Trần Văn G','Quảng Ninh','','0922222222'),(8,'delivered',210000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Ngô Thị H','Cần Thơ','','0933333333'),(9,'pending',67000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Đỗ Văn I','Bắc Giang','','0944444444'),(10,'pending',123000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Đinh Thị J','Nam Định','','0955555555'),(11,'pending',100000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Nguyễn Văn K','Thanh Hóa','','0966666666'),(12,'confirmed',88000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Trần Văn L','Vĩnh Phúc','','0977777777'),(13,'delivered',99000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Phan Thị M','Bến Tre','','0988888888'),(14,'pending',71000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Hà Văn N','Lạng Sơn','','0999999999'),(15,'delivered',105000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Lý Thị O','Sơn La','','0900000000'),(16,'pending',93000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Ngô Văn P','Ninh Bình','','0901234567'),(17,'confirmed',87000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Trịnh Thị Q','Hòa Bình','','0907654321'),(18,'delivered',149000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Lưu Văn R','Hưng Yên','','0908765432'),(19,'confirmed',95000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Chu Văn S','Quảng Bình','','0903456789'),(20,'pending',111000.00,'2025-05-23 07:47:41','2025-05-23 07:47:41',NULL,'Tạ Thị T','Hà Tĩnh','','0906543210');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +126,7 @@ CREATE TABLE `payments` (
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,8 +135,40 @@ CREATE TABLE `payments` (
 
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (1,1,'card','completed','2025-04-12 12:06:35'),(2,2,'cash','completed','2025-04-12 12:06:35'),(3,3,'online','completed','2025-04-12 12:06:35'),(4,4,'card','pending','2025-04-12 12:06:35'),(5,5,'cash','completed','2025-04-12 12:06:35'),(6,6,'online','completed','2025-04-12 12:06:35'),(7,7,'card','completed','2025-04-12 12:06:35'),(8,8,'cash','pending','2025-04-12 12:06:35'),(9,9,'online','completed','2025-04-12 12:06:35'),(10,10,'card','completed','2025-04-12 12:06:35');
+INSERT INTO `payments` VALUES (1,1,'cash','completed','2025-05-23 07:47:57'),(2,2,'card','completed','2025-05-23 07:47:57'),(3,3,'online','completed','2025-05-23 07:47:57'),(4,4,'cash','completed','2025-05-23 07:47:57'),(5,5,'card','failed','2025-05-23 07:47:57'),(6,6,'online','completed','2025-05-23 07:47:57'),(7,7,'cash','pending','2025-05-23 07:47:57'),(8,8,'card','completed','2025-05-23 07:47:57'),(9,9,'online','pending','2025-05-23 07:47:57'),(10,10,'cash','completed','2025-05-23 07:47:57'),(11,11,'card','completed','2025-05-23 07:47:57'),(12,12,'online','completed','2025-05-23 07:47:57'),(13,13,'cash','completed','2025-05-23 07:47:57'),(14,14,'card','pending','2025-05-23 07:47:57'),(15,15,'online','completed','2025-05-23 07:47:57'),(16,16,'cash','completed','2025-05-23 07:47:57'),(17,17,'card','completed','2025-05-23 07:47:57'),(18,18,'online','completed','2025-05-23 07:47:57'),(19,19,'cash','completed','2025-05-23 07:47:57'),(20,20,'card','completed','2025-05-23 07:47:57');
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_inventory`
+--
+
+DROP TABLE IF EXISTS `product_inventory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_inventory` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `status` enum('available','out_of_stock') DEFAULT NULL,
+  `is_current` tinyint(1) DEFAULT '0',
+  `start_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `end_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_inventory_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_inventory`
+--
+
+LOCK TABLES `product_inventory` WRITE;
+/*!40000 ALTER TABLE `product_inventory` DISABLE KEYS */;
+INSERT INTO `product_inventory` VALUES (1,1,45000.00,100,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(2,1,50000.00,80,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(3,2,20000.00,50,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(4,2,18000.00,40,'available',1,'2025-05-23 07:35:58',NULL),(5,3,70000.00,60,'available',1,'2025-05-23 07:35:58',NULL),(6,3,75000.00,30,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(7,4,30000.00,100,'available',1,'2025-05-23 07:35:58',NULL),(8,4,28000.00,80,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(9,5,60000.00,90,'available',1,'2025-05-23 07:35:58',NULL),(10,5,55000.00,70,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(11,6,15000.00,120,'available',1,'2025-05-23 07:35:58',NULL),(12,6,14000.00,100,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(13,7,25000.00,110,'available',1,'2025-05-23 07:35:58',NULL),(14,7,23000.00,90,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(15,8,20000.00,130,'available',1,'2025-05-23 07:35:58',NULL),(16,8,18000.00,100,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(17,9,30000.00,60,'available',1,'2025-05-23 07:35:58',NULL),(18,9,29000.00,40,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(19,10,35000.00,70,'available',1,'2025-05-23 07:35:58',NULL),(20,10,33000.00,50,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(21,11,22000.00,90,'available',1,'2025-05-23 07:35:58',NULL),(22,11,21000.00,60,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(23,12,55000.00,85,'available',1,'2025-05-23 07:35:58',NULL),(24,12,53000.00,65,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(25,13,17000.00,95,'available',1,'2025-05-23 07:35:58',NULL),(26,13,16000.00,75,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(27,14,20000.00,90,'available',1,'2025-05-23 07:35:58',NULL),(28,14,19000.00,70,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(29,15,18000.00,120,'available',1,'2025-05-23 07:35:58',NULL),(30,15,16000.00,100,'available',0,'2025-05-23 07:35:58','2025-05-25 09:10:59'),(31,16,25000.00,10,'available',1,'2025-05-23 07:35:58',NULL),(33,1,25000.00,10,'available',1,'2025-05-25 09:10:59',NULL);
+/*!40000 ALTER TABLE `product_inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -153,18 +182,15 @@ CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `description` text,
-  `price` decimal(10,2) NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `category_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `quantity` int DEFAULT '0',
-  `status` enum('available','out_of_stock') DEFAULT 'available',
   `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +199,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'Phở bò','Phở truyền thống với nước dùng đậm đà',50000.00,'pho_bo.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',20,'available','TRUYEN_THONG'),(2,'Bánh mì pate','Bánh mì Việt Nam với pate đặc biệt',25000.00,'banh_mi.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',30,'available','FAST_FOOD'),(3,'Gà nướng','Gà nướng thơm ngon với gia vị đặc biệt',75000.00,'ga_nuong.jpg',2,'2025-04-12 12:06:35','2025-04-12 12:06:35',15,'available','NUONG'),(4,'Nem rán','Nem truyền thống giòn rụm',35000.00,'nem_ran.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',25,'available','CHIEN'),(5,'Bún chả','Bún chả Hà Nội đặc sản',45000.00,'bun_cha.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',18,'available','TRUYEN_THONG'),(6,'Chè đậu đen','Chè ngọt thanh giải nhiệt',20000.00,'che_dau_den.jpg',4,'2025-04-12 12:06:35','2025-04-12 12:06:35',40,'available','CHE'),(7,'Cà phê sữa đá','Cà phê đặc sản Việt Nam',25000.00,'ca_phe.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35',50,'available','CA_PHE'),(8,'Bia Hà Nội','Bia truyền thống Hà Nội',30000.00,'bia.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35',35,'available','BIA'),(9,'Đậu hũ chiên','Đậu hũ chiên giòn dành cho người chay',30000.00,'dau_hu.jpg',3,'2025-04-12 12:06:35','2025-04-12 12:06:35',20,'available','CHAY'),(10,'Bánh xèo','Bánh xèo miền Tây đặc sản',40000.00,'banh_xeo.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',15,'available','TRUYEN_THONG'),(11,'Sinh tố bơ','Sinh tố bơ thơm ngon bổ dưỡng',35000.00,'sinh_to.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35',30,'available','SINH_TO'),(12,'Cơm tấm sườn','Cơm tấm sườn nướng Sài Gòn',55000.00,'com_tam.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',20,'available','COM'),(13,'Bánh flan','Bánh flan tráng miệng thơm ngon',20000.00,'banh_flan.jpg',4,'2025-04-12 12:06:35','2025-04-12 12:06:35',25,'available','TRANG_MIENG'),(14,'Trà đào','Trà đào mát lạnh',25000.00,'tra_dao.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35',40,'available','TRA'),(15,'Bánh bao','Bánh bao nhân thịt truyền thống',20000.00,'banh_bao.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35',30,'available','HAP');
+INSERT INTO `products` VALUES (1,'Phở bò đặc biệt','Phở truyền thống với nước dùng đậm đà','pho_bo.jpg',2,'2025-04-12 12:06:35','2025-05-25 10:12:42','TRUYEN_THONG'),(2,'Bánh mì pate','Bánh mì Việt Nam với pate đặc biệt','banh_mi.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35','FAST_FOOD'),(3,'Gà nướng','Gà nướng thơm ngon với gia vị đặc biệt','ga_nuong.jpg',2,'2025-04-12 12:06:35','2025-04-12 12:06:35','NUONG'),(4,'Nem rán','Nem truyền thống giòn rụm','nem_ran.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35','CHIEN'),(5,'Bún chả','Bún chả Hà Nội đặc sản','bun_cha.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35','TRUYEN_THONG'),(6,'Chè đậu đen','Chè ngọt thanh giải nhiệt','che_dau_den.jpg',4,'2025-04-12 12:06:35','2025-04-12 12:06:35','CHE'),(7,'Cà phê sữa đá','Cà phê đặc sản Việt Nam','ca_phe.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35','CA_PHE'),(8,'Bia Hà Nội','Bia truyền thống Hà Nội','bia.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35','BIA'),(9,'Đậu hũ chiên','Đậu hũ chiên giòn dành cho người chay','dau_hu.jpg',3,'2025-04-12 12:06:35','2025-04-12 12:06:35','CHAY'),(10,'Bánh xèo','Bánh xèo miền Tây đặc sản','banh_xeo.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35','TRUYEN_THONG'),(11,'Sinh tố bơ','Sinh tố bơ thơm ngon bổ dưỡng','sinh_to.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35','SINH_TO'),(12,'Cơm tấm sườn','Cơm tấm sườn nướng Sài Gòn','com_tam.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35','COM'),(13,'Bánh flan','Bánh flan tráng miệng thơm ngon','banh_flan.jpg',4,'2025-04-12 12:06:35','2025-04-12 12:06:35','TRANG_MIENG'),(14,'Trà đào','Trà đào mát lạnh','tra_dao.jpg',5,'2025-04-12 12:06:35','2025-04-12 12:06:35','TRA'),(15,'Bánh bao','Bánh bao nhân thịt truyền thống','banh_bao.jpg',1,'2025-04-12 12:06:35','2025-04-12 12:06:35','HAP'),(16,'Xôi thịt chả chứng','Xôi nóng hổi,cùng topping và nước thịt đậm đà','xoi_thit.jpg',1,'2025-05-24 23:38:45','2025-05-25 09:53:38','TRUYEN_THONG');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -307,4 +333,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-15 15:23:37
+-- Dump completed on 2025-05-25 22:18:58

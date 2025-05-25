@@ -1,4 +1,4 @@
-package com.food.dto;
+package com.food.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;

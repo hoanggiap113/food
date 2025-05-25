@@ -22,8 +22,8 @@ public class CategoryController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @PostMapping()
-    public ResponseEntity<?> addCategory(@Valid @RequestBody Category category) {
-
-    }
+//    @PostMapping()
+//    public ResponseEntity<?> addCategory(@Valid @RequestBody Category category) {
+//
+//    }
 }
