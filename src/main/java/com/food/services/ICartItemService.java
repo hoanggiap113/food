@@ -1,6 +1,6 @@
 package com.food.services;
 
-import com.food.dto.CartItemDTO;
+import com.food.request.CartItemDTO;
 import com.food.model.entities.CartItem;
 import org.springframework.stereotype.Service;
 

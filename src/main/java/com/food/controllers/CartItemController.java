@@ -3,9 +3,8 @@ package com.food.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.food.dto.CartItemDTO;
+import com.food.request.CartItemDTO;
 import com.food.model.entities.CartItem;
-import com.food.model.entities.Product;
 import com.food.services.impl.CartItemService;
 import com.food.services.impl.ProductService;
 import jakarta.validation.Valid;

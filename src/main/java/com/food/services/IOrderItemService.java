@@ -1,6 +1,6 @@
 package com.food.services;
 import java.util.List;
-import com.food.dto.OrderItemDTO;
+import com.food.request.OrderItemDTO;
 import com.food.model.entities.OrderItem;
 import org.springframework.stereotype.Service;
 

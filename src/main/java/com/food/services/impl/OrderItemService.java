@@ -1,7 +1,7 @@
 package com.food.services.impl;
 
 import com.food.customexceptions.DataNotFoundException;
-import com.food.dto.OrderItemDTO;
+import com.food.request.OrderItemDTO;
 import com.food.model.entities.Order;
 import com.food.model.entities.OrderItem;
 import com.food.model.entities.Product;

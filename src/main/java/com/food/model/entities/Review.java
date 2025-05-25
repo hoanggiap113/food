@@ -22,6 +22,9 @@ public class Review extends BaseEntity {
     @JoinColumn(name="user_id")
     private User user;
 
+    @Column(name="rating")
+    private int rating;
+
     @Column(name="comment")
     private String comment;
 

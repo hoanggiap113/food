@@ -1,7 +1,7 @@
-package com.food.dto;
+package com.food.request;
 import java.util.List;
 
-import jakarta.validation.constraints.Min;
+import com.food.commons.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,15 +16,22 @@ import lombok.*;
 public class ProductRequestDTO {
         @NotBlank(message = "Product name required")
         private String name;
+
         private String description;
-        @Min(value=0,message = "price must be greater than 0")
-        private Double price;
+
         @Size(max = 500, message = "Image URL must be less than 500 characters")
         private String image_url;
+
         @NotNull(message = "Category ID is required")
-        private Long category_id;
-        private Long quantity;
+        private Long categoryId;
+
         private List<String> type;
+
+        private Double price;
+
+        private Long quantity;
+
+        private String status;
 
 
 }

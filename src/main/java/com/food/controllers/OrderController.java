@@ -2,7 +2,7 @@ package com.food.controllers;
 
 import java.util.List;
 import java.util.stream.*;
-import com.food.dto.OrderDTO;
+import com.food.request.OrderDTO;
 import com.food.model.entities.Order;
 import com.food.services.impl.OrderService;
 import jakarta.validation.Valid;
@@ -50,6 +50,8 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    //Admin xoa don hang
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@Valid @PathVariable("id") Long orderId) throws Exception {
         orderService.deleteOrder(orderId); //Xóa mềm => chỉnh trạng thái sang false
