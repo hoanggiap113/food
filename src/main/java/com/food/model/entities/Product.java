@@ -2,6 +2,7 @@ package com.food.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,7 +12,7 @@ import lombok.*;
 @Setter
 @Table(name="products")
 
-public class Product extends BaseEntity {
+public class Product extends BaseEntity{
 
     @Column(name ="name",nullable = false,length = 300)
     private String name;
@@ -19,23 +20,17 @@ public class Product extends BaseEntity {
     @Column(name="description")
     private String description;
 
-    @Column(name="price",nullable = false)
-    private Double price;
-
     @Column(name="image_url")
     private String imageUrl;
 
-    @Column(name="quantity")
-    private Long quantity;
-
-    @Column(name="status")
-    private String status;
-    
     @Column(name="type")
     private String type;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    Category category;
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductInventory> inventoryList;
 
 }

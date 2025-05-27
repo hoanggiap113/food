@@ -1,6 +1,6 @@
 package com.food.response;
 import com.food.model.entities.BaseEntity;
-import com.food.model.entities.Product;
+import com.food.model.entities.ProductInventory;
 import lombok.*;
 
 @Getter
@@ -8,23 +8,14 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponseDTO extends BaseEntity {
+public class ProductResponseDTO {
+    private Long id;
     private String name;
     private String description;
     private Double price;
     private String image_url;
     private Long quantity;
     private String category_name;
-
-    public static ProductResponseDTO fromProduct(Product product){
-        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .image_url(product.getImageUrl())
-                .category_name(product.getCategory().getName())
-                .quantity(product.getQuantity())
-                .build();
-        return productResponseDTO;
-    }
+    private String type;
+    private String status;
 }
