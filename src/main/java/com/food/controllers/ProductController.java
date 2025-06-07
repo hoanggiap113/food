@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/products")
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductService productService;
     private final FileStorageService fileStorageService;
+
 
     @GetMapping()
     public ResponseEntity<?> getProducts() {
@@ -31,7 +33,9 @@ public class ProductController {
         }
     }
     @PostMapping()
-    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
+    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO,
+                                        @RequestParam("imageFile") MultipartFile imageFile) {
+
         try{
             ProductRequestDTO product = productService.saveProduct(productRequestDTO);
             return ResponseEntity.ok(product);

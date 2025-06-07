@@ -1,8 +1,10 @@
 package com.food.services;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,20 +12,16 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class FileStorageService {
-    private final Path rootLocation = Paths.get("uploads");
-    public String store(MultipartFile file) throws Exception {
-        if (file.isEmpty()) {
-            throw new Exception("File ảnh không được để trống!");
-        }
-        if (!Files.exists(rootLocation)) {
-            Files.createDirectories(rootLocation);
-        }
-        // Tạo tên file ngẫu nhiên (tránh trùng lặp)
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path destinationFile = rootLocation.resolve(fileName);
-        // Lưu file vào thư mục uploads
-        Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
-        // Trả về đường dẫn truy cập ảnh (ví dụ: /uploads/abc.jpg)
-        return "/uploads/" + fileName;
+
+    private final String uploadDir = "uploads/";
+
+    public String save(MultipartFile file) throws IOException {
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path path = Paths.get(uploadDir + filename);
+
+        Files.createDirectories(path.getParent());
+        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        return "/images/" + filename; // URL truy cập frontend
     }
 }
