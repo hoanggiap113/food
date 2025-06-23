@@ -27,15 +27,16 @@ public class OrderService implements IOrderService {
     }
     @Override
     public Order createOrder(OrderDTO orderDTO) {
-        User existUser = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDTO.getUserId()));
+        User user = userRepository.findById(orderDTO.getUserId()).orElse(null);
         Order order = new Order().builder()
-                .user(existUser)
                 .address(orderDTO.getAddress())
                 .note(orderDTO.getNote())
                 .totalPrice(orderDTO.getTotalPrice())
                 .fullName(orderDTO.getFullName())
+                .user(user)
                 .phoneNumber(orderDTO.getPhoneNumber())
                 .status("pending")
+                .active(true)
                 .build();
         return orderRepository.save(order);
     }
@@ -43,9 +44,7 @@ public class OrderService implements IOrderService {
     @Override
     public Order updateOrder(Long id,OrderDTO orderDTO) throws Exception {
         Order existingOrder = orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
-        User existingUser = userRepository.findById((orderDTO.getUserId())).orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDTO.getUserId()));
         modelMapper.map(orderDTO, existingOrder);
-        existingOrder.setUser(existingUser);
         return orderRepository.save(existingOrder);
     }
 
