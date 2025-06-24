@@ -15,14 +15,18 @@ public class CartItemResponse {
     private int quantity;
     private Double price;
 
+    private String productName;
+    private String productImage;
+
     public static CartItemResponse from(CartItem cartItem) {
-        CartItemResponse cartItemResponse = CartItemResponse.builder()
+        return CartItemResponse.builder()
                 .id(cartItem.getId())
                 .cartId(cartItem.getCart().getId())
                 .productId(cartItem.getProduct().getId())
                 .quantity(cartItem.getQuantity())
                 .price(cartItem.getPrice())
+                .productName(cartItem.getProduct().getName())
+                .productImage(cartItem.getProduct().getImageUrl())
                 .build();
-        return cartItemResponse;
     }
 }

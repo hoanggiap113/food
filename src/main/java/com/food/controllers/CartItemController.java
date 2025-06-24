@@ -2,8 +2,10 @@ package com.food.controllers;
 
 import com.food.customexceptions.DataNotFoundException;
 import com.food.dto.CartItemDTO;
+import com.food.dto.request.AddCartItemRequest;
 import com.food.model.context.CartContext;
 import com.food.model.entities.CartItem;
+import com.food.response.CartItemResponse;
 import com.food.services.JwtService;
 import com.food.services.ICartItemService;
 import com.food.services.ICartService;
@@ -39,9 +41,9 @@ public class CartItemController {
         return new CartContext(userId, sessionId);
     }
 
-    @PostMapping("/{productId}")
+    @PostMapping("/add")
     public ResponseEntity<?> addCartItem(
-            @PathVariable("productId") Long productId,
+            @RequestBody AddCartItemRequest request,
             @RequestHeader(value = "Authorization", required = false) String bearerToken,
             @RequestHeader(value = "Session-Id", required = false) String sessionId
     ) {
@@ -49,21 +51,18 @@ public class CartItemController {
         Long cartId = cartService.findOrCreateCart(context).getId();
 
         try {
-            CartItem item = cartItemService.saveCartItem(cartId, productId);
+            CartItem item = cartItemService.saveCartItem(cartId, request);
+            CartItemResponse response = CartItemResponse.from(item);
 
-            return ResponseEntity.ok(Map.of(
-                    "message", "Product added to cart",
-                    "cartItemId", item.getId(),
-                    "productId", item.getProduct().getId(),
-                    "quantity", item.getQuantity(),
-                    "price", item.getPrice()
-            ));
+            return ResponseEntity.ok(response);
         } catch (IllegalStateException e) {
             return ResponseEntity.ok(Map.of(
                     "message", e.getMessage()
             ));
         }
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCartItem(

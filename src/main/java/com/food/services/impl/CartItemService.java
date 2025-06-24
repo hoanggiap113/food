@@ -1,6 +1,7 @@
 package com.food.services.impl;
 
 import com.food.customexceptions.DataNotFoundException;
+import com.food.dto.request.AddCartItemRequest;
 import com.food.model.context.CartContext;
 import com.food.model.entities.Cart;
 import com.food.model.entities.CartItem;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,31 +39,32 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    public CartItem saveCartItem(Long cartId, Long productId) {
+    public CartItem saveCartItem(Long cartId, AddCartItemRequest request) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find cart with id: " + cartId));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id: " + productId));
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id: " + request.getProductId()));
 
         Optional<CartItem> existingItem = cartItemRepository.findByCart(cart).stream()
                 .filter(i -> i.getProduct().getId().equals(product.getId()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
-            // Neu da ton tai thi thong bao cartItem da ton tai trong gio hang
             throw new IllegalStateException("Product already exists in cart");
         }
 
-        ProductInventory inventory = productInventoryRepository.findCurrentByProductId(productId);
-        if (inventory == null) {
-            throw new DataNotFoundException("No active inventory found for product id: " + productId);
+        if (request.getQuantity() == null || request.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
+        if (request.getTotalPrice() == null || request.getTotalPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Total price must be greater than 0");
         }
 
         CartItem cartItem = CartItem.builder()
                 .cart(cart)
                 .product(product)
-                .quantity(1)
-                .price(inventory.getPrice())
+                .quantity(request.getQuantity())
+                .price(request.getTotalPrice().doubleValue())  // ✅ dùng đúng field
                 .build();
 
         return cartItemRepository.save(cartItem);
