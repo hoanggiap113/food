@@ -82,44 +82,44 @@ public class CartItemController {
             return ResponseEntity.status(500).body(Map.of("error", "Lỗi hệ thống"));
         }
     }
-//
-//    @PatchMapping("/{id}/increase")
-//    public ResponseEntity<?> increaseQuantity(
-//            @PathVariable Long id,
-//            @RequestHeader(value = "Authorization", required = false) String bearerToken,
-//            @RequestHeader(value = "Session-Id", required = false) String sessionId
-//    ) {
-//        CartContext context = extractCartContext(bearerToken, sessionId);
-//        try {
-//            cartItemService.increaseQuantity(id, context);
-//            return ResponseEntity.ok(Map.of("message", "Quantity increased"));
-//        } catch (DataNotFoundException e) {
-//            return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
-//        } catch (SecurityException e) {
-//            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(500).body(Map.of("error", "Lỗi hệ thống"));
-//        }
-//    }
-//
-//    @PatchMapping("/{id}/decrease")
-//    public ResponseEntity<?> decreaseQuantity(
-//            @PathVariable Long id,
-//            @RequestHeader(value = "Authorization", required = false) String bearerToken,
-//            @RequestHeader(value = "Session-Id", required = false) String sessionId
-//    ) {
-//        CartContext context = extractCartContext(bearerToken, sessionId);
-//        try {
-//            cartItemService.decreaseQuantity(id, context);
-//            return ResponseEntity.ok(Map.of("message", "Quantity decreased"));
-//        } catch (DataNotFoundException e) {
-//            return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
-//        } catch (SecurityException e) {
-//            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(500).body(Map.of("error", "Lỗi hệ thống"));
-//        }
-//    }
+
+    @PatchMapping("/{id}/increase")
+    public ResponseEntity<?> increaseQuantity(
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken,
+            @RequestHeader(value = "Session-Id", required = false) String sessionId
+    ) {
+        CartContext context = extractCartContext(bearerToken, sessionId);
+        try {
+            cartItemService.increaseQuantity(id, context);
+            return ResponseEntity.ok(Map.of("message", "Quantity increased"));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Lỗi hệ thống"));
+        }
+    }
+
+    @PatchMapping("/{id}/decrease")
+    public ResponseEntity<?> decreaseQuantity(
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken,
+            @RequestHeader(value = "Session-Id", required = false) String sessionId
+    ) {
+        CartContext context = extractCartContext(bearerToken, sessionId);
+        try {
+            cartItemService.decreaseQuantity(id, context);
+            return ResponseEntity.ok(Map.of("message", "Quantity decreased"));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Lỗi hệ thống"));
+        }
+    }
 
     @GetMapping
     public ResponseEntity<?> getCartItems(
