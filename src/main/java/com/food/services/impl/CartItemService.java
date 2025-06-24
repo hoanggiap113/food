@@ -63,7 +63,7 @@ public class CartItemService implements ICartItemService {
                 .quantity(1)
                 .price(inventory.getPrice())
                 .build();
-
+            //CHỗ này, trên front- tôi truyền như này cơ
         return cartItemRepository.save(cartItem);
     }
 
