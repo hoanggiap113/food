@@ -16,8 +16,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Configuration
@@ -41,10 +39,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)  // <-- xử lý lỗi xác thực tại đây
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/user/**", "/product/**").hasRole("admin")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/oauth2-login")
@@ -53,7 +49,11 @@ public class SecurityConfig {
                             var email = oidcUser.getEmail();
                             var name = oidcUser.getName();
                             var user = userService.saveOrUpdateGoogleUser(email, name);
-                            var jwt = jwtService.generateToken(user.getEmail(), Collections.singletonList(user.getRole()));
+                            var jwt = jwtService.generateToken(
+                                    String.valueOf(user.getId()),
+                                    user.getEmail(),
+                                    Collections.singletonList(user.getRole())
+                            );
                             response.sendRedirect("/auth/google-callback?token=" + jwt);
                         })
                         .failureHandler((request, response, exception) -> {

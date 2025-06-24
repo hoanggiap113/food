@@ -58,6 +58,13 @@ public class OrderService implements IOrderService {
         }
     }
 
+    public void updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new DataNotFoundException("Cannot find Order with id: " + orderId));
+        order.setStatus(status);
+        orderRepository.save(order);
+    }
+
     @Override
     public List<Order> findByUserId(Long userId) {
         return orderRepository.findByUserId(userId);

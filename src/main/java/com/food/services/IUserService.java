@@ -18,7 +18,7 @@ public interface IUserService {
 
     List<UserDetailResponse> getAlluser();
 
-    UserDetailResponse getUser(long userId);
+    UserDetailResponse getUserById(long userId);
 
     Boolean isEmailExist(String email);
 

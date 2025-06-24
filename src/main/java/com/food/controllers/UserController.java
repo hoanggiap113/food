@@ -28,7 +28,7 @@ public class UserController {
         UserDetailResponse response = userService.saveUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response));
+                .body(ApiResponse.success(response, "Add user success"));
     }
 
     @DeleteMapping(value = "/{userId}")
@@ -41,7 +41,7 @@ public class UserController {
     @GetMapping(value = "/{userId}")
     public UserDetailResponse getUser(@PathVariable @Min(value = 1, message = "Get user by Id") long userId) {
         log.info("Request get User by Id = {}", userId);
-        return userService.getUser(userId);
+        return userService.getUserById(userId);
     }
 
     @GetMapping(value = "/")

@@ -22,6 +22,7 @@ public class UserRequestDTO implements Serializable {
     @NotNull(message = "password can not null")
     private String password;
 
+    @NotBlank(message = "phone can not blank")
     private String phone;
 
     @NotEmpty(message = "address can not empty")

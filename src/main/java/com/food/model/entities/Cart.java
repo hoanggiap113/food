@@ -1,25 +1,38 @@
 package com.food.model.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@Service
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="cart")
-public class Cart extends BaseEntity{
+@Table(name = "cart")
+public class Cart extends AbstractEntity {
+
     @OneToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
+    @Column(name = "session_id", nullable = true, unique = true)
+    private String sessionId;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> items = new ArrayList<>();
+
+    public void addItem(CartItem item) {
+        item.setCart(this);
+        this.items.add(item);
+    }
+
+    public void removeItem(CartItem item) {
+        this.items.remove(item);
+        item.setCart(null);
+    }
 }
+

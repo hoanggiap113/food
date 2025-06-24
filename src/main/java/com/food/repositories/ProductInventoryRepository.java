@@ -18,5 +18,4 @@ public interface ProductInventoryRepository extends JpaRepository<ProductInvento
     @Query("SELECT pi FROM ProductInventory pi WHERE pi.product.id = :productId AND pi.isCurrent = true")
     ProductInventory findCurrentByProductId(@Param("productId") Long productId);
 
-
 }

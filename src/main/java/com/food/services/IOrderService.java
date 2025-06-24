@@ -11,5 +11,6 @@ public interface IOrderService {
     Order createOrder(OrderDTO orderDTO) throws Exception;
     Order updateOrder(Long id,OrderDTO orderDTO) throws Exception;
     void deleteOrder(Long id) throws Exception;
+    void updateOrderStatus(Long orderId, String status);
     List<Order> findByUserId(Long userId);
 }

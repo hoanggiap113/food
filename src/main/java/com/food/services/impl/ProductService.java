@@ -64,7 +64,6 @@ public class ProductService implements IProductService {
         product.setCategory(category);
         product.setImageUrl(body.getImage_url());
         product.setType(body.getType().stream().collect(Collectors.joining(",")));
-        product.setCreatedAt(LocalDateTime.now());
         productRepository.save(product);
 
         ProductInventory productInventory = new ProductInventory();
@@ -102,7 +101,6 @@ public class ProductService implements IProductService {
         existingProduct.setName(body.getName());
         existingProduct.setDescription(body.getDescription());
         existingProduct.setImageUrl(body.getImageUrl());
-        existingProduct.setUpdatedAt(LocalDateTime.now());
 
         productRepository.save(existingProduct);
 

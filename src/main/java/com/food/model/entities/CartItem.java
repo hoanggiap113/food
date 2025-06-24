@@ -9,19 +9,21 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name="cart_items")
-public class CartItem extends BaseEntity{
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH,CascadeType.DETACH,CascadeType.REMOVE})
-    @JoinColumn(name="cart_id")
+@Table(name = "cart_items")
+public class CartItem extends AbstractEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @ManyToOne(cascade = {CascadeType.DETACH})
-    @JoinColumn(name="product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name="quantity")
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name="price")
+    @Column(name = "price", nullable = false)
     private double price;
 }
+

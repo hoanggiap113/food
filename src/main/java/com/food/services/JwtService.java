@@ -26,9 +26,10 @@ public class JwtService {
         this.jwtDecoder = jwtDecoder;
     }
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String userId, String username, List<String> roles) {
         Instant now = Instant.now();
         Instant expiry = now.plus(ttl);
+
         List<String> modifiedRoles = roles.stream()
                 .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
                 .collect(Collectors.toList());
@@ -38,6 +39,7 @@ public class JwtService {
                 .issuedAt(now)
                 .expiresAt(expiry)
                 .subject(username)
+                .claim("userId", userId)
                 .claim("roles", modifiedRoles)
                 .build();
 
@@ -61,4 +63,11 @@ public class JwtService {
     public List<String> getRolesFromToken(String token) {
         return (List<String>) jwtDecoder.decode(token).getClaims().get("roles");
     }
+
+    public String extractUserId(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+
+        return jwt.getClaimAsString("userId");
+    }
+
 }
