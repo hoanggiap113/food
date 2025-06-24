@@ -46,22 +46,11 @@ public class ProductService implements IProductService {
             productResponseDTO.setDescription(item.getDescription());
             productResponseDTO.setPrice(productInventory.getPrice());
             productResponseDTO.setQuantity(productInventory.getQuantity());
+            productResponseDTO.setImage_url(item.getImageUrl());
             productResponseDTO.setStatus(productInventory.getStatus().toString());
             listProduct.add(productResponseDTO);
         }
         return listProduct;
-    }
-
-    @Override
-    public Page<ProductResponseDTO> getAllProduct(PageRequest pageRequest) {
-//        return productRepository.findAll(pageRequest).map(ProductResponseDTO::fromProduct);
-        return null;
-    }
-
-    @Override
-    public Product getProductById(Long id) throws Exception {
-//        return productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Product not found with id=" + id));
-        return null;
     }
 
     @Override
@@ -135,6 +124,14 @@ public class ProductService implements IProductService {
     public void deleteProduct(Long id) throws Exception {
         ProductInventory productInventory = productInventoryRepository.findCurrentByProductId(id);
         productInventory.setIsCurrent(false);
+    }
+
+    @Override
+    public ProductResponseDTO findById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Product not found"));
+        ProductInventory productInventory = productInventoryRepository.findCurrentByProductId(id);
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO().from(product, productInventory);
+        return productResponseDTO;
     }
 
 }

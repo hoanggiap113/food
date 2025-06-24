@@ -11,9 +11,8 @@ import org.springframework.data.domain.PageRequest;
 
 public interface IProductService {
     List<ProductResponseDTO> getAll();
-    Page<ProductResponseDTO> getAllProduct(PageRequest pageRequest);
-    Product getProductById(Long id) throws Exception;
     ProductRequestDTO saveProduct(ProductRequestDTO body) throws Exception;
     ProductPresentResponse updateProduct(ProductPresentRequestDTO body, Long id) throws Exception;
     void deleteProduct(Long id) throws Exception;
+    ProductResponseDTO findById(Long id);
 }

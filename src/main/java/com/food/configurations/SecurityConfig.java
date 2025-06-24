@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)  // <-- xử lý lỗi xác thực tại đây
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/user/**", "/product/**").hasRole("admin")
                         .anyRequest().authenticated()
