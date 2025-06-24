@@ -12,7 +12,11 @@ import java.util.List;
 @Setter
 @Table(name="products")
 
-public class Product extends BaseEntity{
+public class Product{
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name ="name",nullable = false,length = 300)
     private String name;

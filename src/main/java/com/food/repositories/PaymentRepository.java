@@ -1,4 +1,7 @@
 package com.food.repositories;
 
-public class PaymentRepository {
+import com.food.model.entities.Payment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 }

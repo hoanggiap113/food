@@ -19,7 +19,7 @@ public class CartController {
     private final ICartService cartService;
     private final JwtService jwtService;
 
-    private CartContext extractCartContext(String bearerToken, UUID sessionId) {
+    private CartContext extractCartContext(String bearerToken, String sessionId) {
         Optional<Long> userIdOpt = Optional.empty();
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             try {
@@ -27,28 +27,34 @@ public class CartController {
                 String userIdStr = jwtService.extractUserId(token);
                 userIdOpt = Optional.of(Long.parseLong(userIdStr));
             } catch (Exception e) {
-                // Log error and proceed as guest
             }
         }
 
-        // Pass unwrapped values or null
         return new CartContext(userIdOpt.orElse(null), sessionId);
     }
 
     @GetMapping
     public ResponseEntity<CartResponse> getCart(
             @RequestHeader(value = "Authorization", required = false) String bearerToken,
-            @RequestHeader(value = "Session-Id", required = false) UUID sessionId
+            @RequestHeader(value = "Session-Id", required = false) String sessionId
     ) {
+        if (sessionId == null) {
+            sessionId = UUID.randomUUID().toString(); // dùng String luôn
+        }
+
         CartContext context = extractCartContext(bearerToken, sessionId);
-        CartResponse cartResponse = cartService.getCart(context);
-        return ResponseEntity.ok(cartResponse);
+        CartResponse cartResponse = cartService.getOrCreateCart(context);
+
+        return ResponseEntity.ok()
+                .header("Set-Session-Id", sessionId)
+                .body(cartResponse);
     }
+
 
     @DeleteMapping("/clear")
     public ResponseEntity<?> clearCart(
             @RequestHeader(value = "Authorization", required = false) String bearerToken,
-            @RequestHeader(value = "Session-Id", required = false) UUID sessionId
+            @RequestHeader(value = "Session-Id", required = false) String sessionId
     ) {
         CartContext context = extractCartContext(bearerToken, sessionId);
         cartService.clearCart(context);
@@ -57,7 +63,7 @@ public class CartController {
 
     @PostMapping("/merge")
     public ResponseEntity<CartResponse> mergeGuestToUser(
-            @RequestHeader("Session-Id") UUID sessionId,
+            @RequestHeader("Session-Id") String sessionId,
             @RequestHeader("Authorization") String bearerToken
     ) {
         if (!bearerToken.startsWith("Bearer ")) {

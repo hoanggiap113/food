@@ -1,41 +1,28 @@
 package com.food.model.context;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.Optional;
-import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
+@AllArgsConstructor
 public class CartContext {
-    private final Long userId;
-    private final UUID sessionId;
 
-    public CartContext(Long userId, UUID sessionId) {
-        this.userId = userId;
-        this.sessionId = sessionId;
-    }
+    private Long userId;
+    private String sessionId; // dùng String thay vì UUID
 
     public Optional<Long> getUserId() {
         return Optional.ofNullable(userId);
     }
 
-    public Optional<UUID> getSessionId() {
+    public Optional<String> getSessionId() {
         return Optional.ofNullable(sessionId);
     }
 
-    public boolean isGuest() {
-        return userId == null;
-    }
-
-    public boolean isAuthenticatedUser() {
-        return userId != null;
-    }
-
     public String getIdentifier() {
-        return isAuthenticatedUser() ? "User: " + userId : "Guest: " + sessionId;
+        return userId != null ? "user-" + userId : "guest-" + sessionId;
     }
 }

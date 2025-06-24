@@ -118,7 +118,7 @@ public class UserService implements IUserService {
 
         User user = userOptional.get();
 
-        if (!passwordEncoder.matches(request.getPassWord(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             log.warn("Authentication failed: Incorrect password for email {}", request.getEmail());
             throw new ResponseStatusException(ErrorCode.UNAUTHENTICATED.getStatusCode(), ErrorCode.UNAUTHENTICATED.getMessage());
         }

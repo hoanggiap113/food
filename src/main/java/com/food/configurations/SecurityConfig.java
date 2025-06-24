@@ -39,9 +39,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)  // <-- xử lý lỗi xác thực tại đây
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/user/**", "/product/**").hasRole("admin")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/oauth2-login")

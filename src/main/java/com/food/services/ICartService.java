@@ -5,7 +5,7 @@ import com.food.model.context.CartContext;
 import com.food.model.entities.Cart;
 
 public interface ICartService {
-    CartResponse getCart(CartContext context);
+    CartResponse getOrCreateCart(CartContext context);
 
     void clearCart(CartContext context);
 
@@ -15,5 +15,6 @@ public interface ICartService {
 
     void deleteCart(Long userId);
 
-    Cart getOrCreateCart(CartContext context);
+    Cart findOrCreateCart(CartContext context);
+
 }

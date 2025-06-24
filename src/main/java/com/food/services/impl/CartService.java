@@ -30,13 +30,13 @@ public class CartService implements ICartService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public CartResponse getCart(CartContext context) {
+    public CartResponse getOrCreateCart(CartContext context) {
         Cart cart = findOrCreateCart(context);
 
         List<CartItemDTO> items = cartItemRepository.findByCart(cart)
                 .stream()
                 .map(item -> CartItemDTO.builder()
-                        .cartId(cart.getId())
+                        .cartItemId(item.getId())
                         .productId(item.getProduct().getId())
                         .quantity(item.getQuantity())
                         .price(item.getPrice())
@@ -61,7 +61,7 @@ public class CartService implements ICartService {
         Optional<Cart> userCartOpt = cartRepository.findByUserId(userId);
 
         if (guestCartOpt.isEmpty()) {
-            return getCart(new CartContext(userId, null));
+            return getOrCreateCart(new CartContext(userId, null));
         }
 
         Cart guestCart = guestCartOpt.get();
@@ -85,7 +85,7 @@ public class CartService implements ICartService {
             cartRepository.save(userCart);
             cartRepository.delete(guestCart);
 
-            return getCart(new CartContext(userId, null));
+            return getOrCreateCart(new CartContext(userId, null));
         } else {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -93,7 +93,7 @@ public class CartService implements ICartService {
             guestCart.setSessionId(null);
             cartRepository.save(guestCart);
 
-            return getCart(new CartContext(userId, null));
+            return getOrCreateCart(new CartContext(userId, null));
         }
     }
 
@@ -117,14 +117,8 @@ public class CartService implements ICartService {
         cartRepository.findByUserId(userId).ifPresent(cartRepository::delete);
     }
 
-    public Cart getOrCreateCart(CartContext context) {
-        return context.getUserId()
-                .flatMap(cartRepository::findByUserId)
-                .or(() -> context.getSessionId().flatMap(cartRepository::findBySessionId))
-                .orElseGet(() -> createCart(context));
-    }
-
-    private Cart findOrCreateCart(CartContext context) {
+    @Override
+    public Cart findOrCreateCart(CartContext context) {
         return context.getUserId()
                 .flatMap(cartRepository::findByUserId)
                 .or(() -> context.getSessionId().flatMap(cartRepository::findBySessionId))

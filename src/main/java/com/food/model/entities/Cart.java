@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -13,16 +12,27 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="cart")
-public class Cart extends AbstractEntity{
+@Table(name = "cart")
+public class Cart extends AbstractEntity {
+
     @OneToOne
-    @JoinColumn(name="user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
-    @Column(name = "session_id")
-    private UUID sessionId;
+    @Column(name = "session_id", nullable = true, unique = true)
+    private String sessionId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
+    public void addItem(CartItem item) {
+        item.setCart(this);
+        this.items.add(item);
+    }
+
+    public void removeItem(CartItem item) {
+        this.items.remove(item);
+        item.setCart(null);
+    }
 }
+
