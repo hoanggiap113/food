@@ -1,13 +1,15 @@
 package com.food.services.impl;
 
 import com.food.customexceptions.DataNotFoundException;
+import com.food.model.entities.OrderItem;
+import com.food.model.entities.Product;
+import com.food.repositories.*;
 import com.food.request.OrderDTO;
 import com.food.model.entities.Order;
 import com.food.model.entities.User;
-import com.food.repositories.OrderRepository;
-import com.food.repositories.UserRepository;
-import com.food.repositories.VoucherRepository;
+import com.food.request.OrderItemDTO;
 import com.food.services.IOrderService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -21,14 +23,24 @@ public class OrderService implements IOrderService {
     private final UserRepository userRepository;
     private final VoucherRepository voucherRepository;
     private final ModelMapper modelMapper;
+    private final ProductRepository productRepository;
+    private final OrderItemRepository orderItemRepository;
     @Override
     public Order getOrderById(Long id) {
         return orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find Order with id: " + id));
     }
-    @Override
+    @Transactional
     public Order createOrder(OrderDTO orderDTO) {
-        User existUser = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDTO.getUserId()));
-        Order order = new Order().builder()
+
+        // Tìm user nếu userId không null
+        User existUser = null;
+        if (orderDTO.getUserId() != null) {
+            existUser = userRepository.findById(orderDTO.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("User with ID " + orderDTO.getUserId() + " not found"));
+        }
+
+        // Tạo Order
+        Order order = Order.builder()
                 .user(existUser)
                 .address(orderDTO.getAddress())
                 .note(orderDTO.getNote())
@@ -37,7 +49,25 @@ public class OrderService implements IOrderService {
                 .phoneNumber(orderDTO.getPhoneNumber())
                 .status("pending")
                 .build();
-        return orderRepository.save(order);
+
+        // Lưu Order
+        Order savedOrder = orderRepository.save(order);
+
+        // Tạo và lưu OrderItems
+        List<OrderItem> orderItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
+            Product product = productRepository.findById(itemDTO.getProductId()).get();
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(savedOrder);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(itemDTO.getQuantity());
+            orderItem.setPrice(itemDTO.getPrice());
+            orderItem.setTotalPrice(itemDTO.getTotalPrice());
+            return orderItem;
+        }).toList();
+
+        orderItemRepository.saveAll(orderItems);
+
+        return savedOrder;
     }
 
     @Override

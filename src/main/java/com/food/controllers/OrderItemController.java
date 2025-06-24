@@ -34,13 +34,5 @@ public class OrderItemController {
         orderItemService.deleteOrderItem(id);
         return ResponseEntity.ok().body("Đã xóa sản phẩm với id:: " + id+ " thành công");
     }
-    @PostMapping("")
-    public ResponseEntity<?> createOrderItem(@Valid @RequestBody OrderItemDTO orderItemDTO) {
-        try{
-            OrderItem orderItem = orderItemService.createOrderItem(orderItemDTO);
-            return ResponseEntity.ok().body(OrderDetailResponse.from(orderItem));
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
 }

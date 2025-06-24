@@ -25,19 +25,6 @@ public class OrderItemService implements IOrderItemService {
         return orderItemRepository.findById(orderItemId).orElseThrow(() -> new DataNotFoundException("OrderItem not found"));
     }
 
-    @Override
-    public OrderItem createOrderItem(OrderItemDTO orderItemDTO) {
-        Order order = orderRepository.findById(orderItemDTO.getOrderId()).orElseThrow(() -> new DataNotFoundException("Cannot find Order with id: " + orderItemDTO.getOrderId()));
-        Product product = productRepository.findById(orderItemDTO.getProductId()).orElseThrow(() -> new DataNotFoundException("Cannot find Product: " + orderItemDTO.getProductId()));
-        OrderItem orderItem = OrderItem.builder()
-                .product(product)
-                .order(order)
-                .price(orderItemDTO.getPrice())
-                .totalPrice(orderItemDTO.getTotalPrice())
-                .quantity(orderItemDTO.getQuantity())
-                .build();
-        return orderItemRepository.save(orderItem);
-    }
 
     @Override
     public List<OrderItem> findByOrderId(Long orderId) {

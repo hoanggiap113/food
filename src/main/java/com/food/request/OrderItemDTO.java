@@ -2,29 +2,32 @@ package com.food.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderItemDTO {
-    @JsonProperty("order_id")
-    @Min(value=1, message = "Order's ID must be > 0")
-    private Long orderId;
 
-    @Min(value=1, message = "Product's ID must be > 0")
-    @JsonProperty("product_id")
+    @NotNull(message = "Product ID is required")
+    @Min(value = 1, message = "Product ID must be greater than 0")
+    @JsonProperty("productId")
     private Long productId;
 
-    @Min(value=1, message = "number_of_products must be >= 1")
-    private int quantity;
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private Integer quantity;
 
-    @Min(value=0, message = "Price must be >= 0")
+    @NotNull(message = "Price is required")
+    @Min(value = 0, message = "Price must be greater than or equal to 0")
     private Double price;
 
-    @Min(value=0, message = "total_price must be >= 0")
-    @JsonProperty("total_price")
+    @NotNull(message = "Total price is required")
+    @Min(value = 1, message = "Total price must be greater than 0")
+    @JsonProperty("totalPrice")
     private Double totalPrice;
 }

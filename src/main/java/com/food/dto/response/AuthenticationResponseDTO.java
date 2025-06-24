@@ -14,5 +14,6 @@ public class AuthenticationResponseDTO {
     private String email;
     private String role;
     private long expiresIn; // Thời gian hết hạn của token (giây)
+    private Long userId;  // Thêm trường userId
 
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 public class OrderDTO {
 
-    @Min(value = 1,message = "User id must be > 0")
+    // userId có thể là null để hỗ trợ đặt hàng không cần đăng nhập
     private Long userId;
 
     private String fullName;
@@ -22,14 +23,17 @@ public class OrderDTO {
     private String address;
 
     @NotBlank(message = "Phone number is required")
-    @Size(message = "Phone number must be at least 5 characters")
+    @Size(min = 5, message = "Phone number must be at least 5 characters")
     private String phoneNumber;
 
     private String note;
 
-    @Min(value = 0,message = "Total price must be > 0=")
+    @Min(value = 0, message = "Total price must be >= 0")
     private Double totalPrice;
 
     private Long voucherId;
 
+    // Thêm danh sách orderItems
+    @JsonProperty("orderItems")
+    private List<OrderItemDTO> orderItems;
 }

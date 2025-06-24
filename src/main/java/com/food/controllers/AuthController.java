@@ -56,7 +56,8 @@ public class AuthController {
                 token,
                 user.getEmail(),
                 user.getRole(),
-                3600
+                3600,
+                user.getId() // Thêm userId
         );
         return ResponseEntity.ok(ApiResponse.success(responseDTO, "Login success fully"));
     }
@@ -91,9 +92,9 @@ public class AuthController {
             String email = jwtService.getUsernameFromToken(token);
             List<String> roles = jwtService.getRolesFromToken(token);
             String role = roles.isEmpty() ? "USER" : roles.get(0);
-
+            Long userId = Long.parseLong(jwtService.extractUserId(token)); // Giả sử subject trong token là userId
             AuthenticationResponseDTO responseDTO = new AuthenticationResponseDTO(
-                    token, email, role, 3600
+                    token, email, role, 3600,userId
             );
 
             return ResponseEntity.ok(ApiResponse.success(responseDTO, "Login google success fully"));
