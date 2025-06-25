@@ -5,6 +5,8 @@ import com.food.dto.request.UserRequestDTO;
 import com.food.dto.response.ApiResponse;
 import com.food.dto.response.AuthenticationResponseDTO;
 import com.food.dto.response.UserDetailResponse;
+import com.food.request.ForgotPasswordRequest;
+import com.food.request.ResetPasswordRequest;
 import com.food.services.JwtService;
 import com.food.services.IUserService;
 import jakarta.validation.Valid;
@@ -59,6 +61,19 @@ public class AuthController {
                 3600
         );
         return ResponseEntity.ok(ApiResponse.success(responseDTO, "Login success fully"));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        userService.processForgotPassword(request);
+        return ResponseEntity.ok(ApiResponse.success(null, "If your email exists, a password reset email has been sent."));
+
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request.getEmail(), request.getPhone(), request.getNewPassword());
+        return ResponseEntity.ok("Password updated successfully");
     }
 
     @GetMapping("/oauth2-login")

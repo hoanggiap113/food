@@ -8,10 +8,14 @@ import com.food.model.entities.Role;
 import com.food.model.entities.User;
 import com.food.repositories.RoleRepository;
 import com.food.repositories.UserRepository;
+import com.food.request.ForgotPasswordRequest;
 import com.food.services.IUserService;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,6 +33,31 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
+    private final MailService mailService;
+
+    @Override
+    public void processForgotPassword(ForgotPasswordRequest request) {
+        String email = request.getEmail();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            log.warn("Attempt to reset password for non-existing email: {}", email);
+            return;
+        }
+
+        User user = optionalUser.get();
+        String newPassword = generateRandomPassword();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        mailService.sendResetPasswordEmail(email, newPassword); // GỌI MAILSERVICE
+    }
+
+    private String generateRandomPassword() {
+        return UUID.randomUUID().toString().substring(0, 8);
+    }
+
 
     @Override
     public UserDetailResponse saveUser(UserRequestDTO request) {
@@ -64,6 +93,23 @@ public class UserService implements IUserService {
                 .address(user.getAddress())
                 .role(role.getName())
                 .build();
+    }
+
+    @Override
+    public void resetPassword(String email, String phone, String newPassword) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new ResponseStatusException(ErrorCode.NOT_FOUND.getStatusCode(), "User not found");
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getPhone().equals(phone)) {
+            throw new ResponseStatusException(ErrorCode.UNAUTHENTICATED.getStatusCode(), "Phone number does not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     @Override

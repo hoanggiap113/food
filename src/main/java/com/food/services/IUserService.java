@@ -4,6 +4,7 @@ import com.food.dto.request.AuthenticationRequestDTO;
 import com.food.dto.request.UserRequestDTO;
 import com.food.dto.response.UserDetailResponse;
 import com.food.model.entities.User;
+import com.food.request.ForgotPasswordRequest;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.List;
@@ -25,4 +26,9 @@ public interface IUserService {
     UserDetailResponse authenticate(AuthenticationRequestDTO request) throws AuthenticationException;
 
     UserDetailResponse saveOrUpdateGoogleUser(String email, String name);
+
+    void processForgotPassword(ForgotPasswordRequest request);
+
+    void resetPassword(String email, String phone, String newPassword);
+
 }
