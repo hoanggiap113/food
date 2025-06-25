@@ -51,9 +51,9 @@ public class UserController {
     }
 
     @PutMapping(value = "/{userId}")
-    public void updateUser(@PathVariable @Min(value = 1, message = "User id must be greater than 0") Long userId) {
+    public void updateUser(@RequestBody UserRequestDTO body, @PathVariable @Min(value = 1, message = "User id must be greater than 0") Long userId) {
         log.info("Update user with Id = {}", userId);
-
+        userService.updateUser(userId, body);
     }
 
 }

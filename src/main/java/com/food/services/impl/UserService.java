@@ -68,7 +68,11 @@ public class UserService implements IUserService {
 
     @Override
     public void updateUser(long userId, UserRequestDTO request) {
-        // Triển khai sau nếu cần
+        User existUser = userRepository.findById(userId).get();
+        existUser.setName(request.getName());
+        existUser.setPhone(request.getPhone());
+        existUser.setEmail(request.getEmail());
+        userRepository.save(existUser);
     }
 
     @Override
@@ -96,6 +100,7 @@ public class UserService implements IUserService {
                         .name(user.getName())
                         .phone(user.getPhone())
                         .email(user.getEmail())
+                        .role(user.getRole().getName())
                         .address(user.getAddress())
                         .build())
                 .orElse(null);

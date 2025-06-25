@@ -33,8 +33,7 @@ public class ProductController {
         }
     }
     @PostMapping()
-    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO,
-                                        @RequestParam("imageFile") MultipartFile imageFile) {
+    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
 
         try{
             ProductRequestDTO product = productService.saveProduct(productRequestDTO);

@@ -48,4 +48,7 @@ public class Order extends BaseEntity{
 
     @Column(name="active")
     private Boolean active;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
