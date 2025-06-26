@@ -26,7 +26,7 @@ public class Payment {
     private String paymentMethod;
 
     @Column(name = "payment_status")
-    private String paymentStatus; // "PENDING", "COMPLETED", "FAILED"
+    private String paymentStatus;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

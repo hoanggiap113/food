@@ -12,7 +12,9 @@ public class OrderDetailResponse {
     private Long orderId;
     private int quantity;
     private Long productId;
+    private String productName;
     private Double price;
+    private String image_url;
     private Double totalPrice;
     public static OrderDetailResponse from(OrderItem orderItem) {
         OrderDetailResponse orderDetailResponse = OrderDetailResponse.builder()
@@ -20,6 +22,8 @@ public class OrderDetailResponse {
                 .orderId(orderItem.getOrder().getId())
                 .quantity(orderItem.getQuantity())
                 .price(orderItem.getPrice())
+                .productName(orderItem.getProduct().getName())
+                .image_url(orderItem.getProduct().getImageUrl())
                 .productId(orderItem.getProduct().getId())
                 .totalPrice(orderItem.getTotalPrice())
                 .build();

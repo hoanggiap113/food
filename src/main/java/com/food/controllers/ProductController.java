@@ -22,13 +22,22 @@ public class ProductController {
     private final FileStorageService fileStorageService;
 
 
-    @GetMapping()
+    @GetMapping("")
     public ResponseEntity<?> getProducts() {
         try{
             List<ProductResponseDTO> products = productService.getAll();
             return ResponseEntity.ok(products);
         }
         catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
+        try{
+            ProductResponseDTO productResponseDTO = productService.findById(id);
+            return ResponseEntity.ok(productResponseDTO);
+        }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -42,20 +51,21 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping() //Xóa mềm
-    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
-        try{
-            productService.deleteProduct(id);
-            return ResponseEntity.ok("Xóa sản phẩm thành công");
-        }catch(Exception e){
+    @DeleteMapping
+    public ResponseEntity<?> deleteProducts(@RequestBody List<Long> ids) {
+        try {
+            productService.deleteProduct(ids);
+            return ResponseEntity.ok("Đã xoá các sản phẩm thành công");
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductPresentRequestDTO productRequestDTO, @PathVariable Long id) {
+    public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO, @PathVariable Long id) {
         try{
-            ProductPresentResponse product = productService.updateProduct(productRequestDTO,id);
-            return ResponseEntity.ok(product);
+            productService.updateProduct(productRequestDTO,id);
+            return ResponseEntity.ok().body("Đã lưu thành công");
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

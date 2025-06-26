@@ -33,18 +33,32 @@ public class ProductService implements IProductService {
     public List<ProductResponseDTO> getAll() {
         List<Product> products = productRepository.findAll();
         List<ProductResponseDTO> listProduct = new ArrayList<>();
-        for(Product item : products){
+        for (Product item : products) {
             ProductResponseDTO productResponseDTO = new ProductResponseDTO();
             ProductInventory productInventory = productInventoryRepository.findCurrentByProductId(item.getId());
-            productResponseDTO.setId(item.getId());
-            productResponseDTO.setName(item.getName());
-            productResponseDTO.setCategory_name(item.getCategory().getName());
+            if (productInventory != null) {
+                productResponseDTO.setId(item.getId());
+                productResponseDTO.setName(item.getName());
+                productResponseDTO.setPrice(productInventory.getPrice());
+                productResponseDTO.setQuantity(productInventory.getQuantity());
+                productResponseDTO.setStatus(productInventory.getStatus() != null
+                        ? productInventory.getStatus().toString()
+                        : "UNKNOWN");
+            } else {
+                continue;
+            }
+
+            if (item.getCategory() != null) {
+                productResponseDTO.setCategory_name(item.getCategory().getName());
+            } else {
+                productResponseDTO.setCategory_name("Không rõ");
+            }
             productResponseDTO.setType(item.getType());
             productResponseDTO.setDescription(item.getDescription());
-            productResponseDTO.setPrice(productInventory.getPrice());
-            productResponseDTO.setQuantity(productInventory.getQuantity());
             productResponseDTO.setImage_url(item.getImageUrl());
-            productResponseDTO.setStatus(productInventory.getStatus().toString());
+
+
+
             listProduct.add(productResponseDTO);
         }
         return listProduct;
@@ -64,6 +78,7 @@ public class ProductService implements IProductService {
         product.setCategory(category);
         product.setImageUrl(body.getImage_url());
         product.setType(body.getType().stream().collect(Collectors.joining(",")));
+        product.setCreatedAt(LocalDateTime.now());
         productRepository.save(product);
 
         ProductInventory productInventory = new ProductInventory();
@@ -79,46 +94,45 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductPresentResponse updateProduct(ProductPresentRequestDTO body, Long id) throws Exception {
-//        Product existingProduct = getProductById(id);
-//        if(existingProduct != null) {
-//            Category existingCategory = categoriesRepository.findById(body.getCategory_id()).orElseThrow(() ->
-//                    new DataNotFoundException("Category not found with id=" + body.getCategory_id()));
-//            existingProduct.setName(body.getName());
-//            existingProduct.setDescription(body.getDescription());
-//            existingProduct.setImageUrl(body.getImage_url());
-//            existingProduct.setType(body.getType().stream().collect(Collectors.joining(",")));
-//        return productRepository.save(existingProduct);
-//        }
-//        return null;
-
+    public void updateProduct(ProductRequestDTO body, Long id) throws Exception {
         Product existingProduct = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Product not found"));
-        String type = body.getType().stream().collect(Collectors.joining(","));
-        Category category = categoriesRepository.findById(body.getCategoryId()).orElseThrow();
-
-        existingProduct.setType(type);
-        existingProduct.setCategory(category);
-        existingProduct.setName(body.getName());
-        existingProduct.setDescription(body.getDescription());
-        existingProduct.setImageUrl(body.getImageUrl());
-
+        if(existingProduct != null) {
+            Category existingCategory = categoriesRepository.findById(body.getCategoryId()).orElseThrow(() ->
+                    new DataNotFoundException("Category not found with id=" + body.getCategoryId()));
+            existingProduct.setName(body.getName());
+            existingProduct.setDescription(body.getDescription());
+            existingProduct.setImageUrl(body.getImage_url());
+            existingProduct.setType(body.getType().stream().collect(Collectors.joining(",")));
+            existingProduct.setCategory(existingCategory);
+            existingProduct.setUpdatedAt(LocalDateTime.now());
         productRepository.save(existingProduct);
+        }
 
-        ProductPresentResponse response = new ProductPresentResponse();
-        response.setType(type);
-        response.setCategoryName(existingProduct.getCategory().getName());
-        response.setName(body.getName());
-        response.setDescription(body.getDescription());
-        response.setImageUrl(body.getImageUrl());
-        response.setUpdatedAt(LocalDateTime.now());
-        return response;
+        ProductInventory existingProductInventory = productInventoryRepository.findCurrentByProductId(id);
+        existingProductInventory.setIsCurrent(false);
+        productInventoryRepository.save(existingProductInventory);
+
+        ProductInventory productInventory = new ProductInventory();
+        productInventory.setProduct(existingProduct);
+        productInventory.setPrice(body.getPrice());
+        productInventory.setQuantity(body.getQuantity());
+        productInventory.setStatus(body.getStatus().toString());
+        productInventory.setIsCurrent(true);
+        productInventory.setStartDate(LocalDateTime.now());
+        productInventoryRepository.save(productInventory);
+
     }
 
     //Xóa mềm(bằng cách set bảng giá đang hoạt động = false
     @Override
-    public void deleteProduct(Long id) throws Exception {
-        ProductInventory productInventory = productInventoryRepository.findCurrentByProductId(id);
-        productInventory.setIsCurrent(false);
+    public void deleteProduct(List<Long> ids) throws Exception {
+        for (Long id : ids) {
+            Product product = productRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm với ID: " + id));
+            ProductInventory inventory = productInventoryRepository.findCurrentByProductId(id);
+            inventory.setIsCurrent(false);
+            productInventoryRepository.save(inventory);
+        }
     }
 
     @Override

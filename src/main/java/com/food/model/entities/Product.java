@@ -2,6 +2,8 @@ package com.food.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -34,6 +36,11 @@ public class Product{
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductInventory> inventoryList;
 

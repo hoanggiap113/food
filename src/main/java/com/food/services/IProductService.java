@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 public interface IProductService {
     List<ProductResponseDTO> getAll();
     ProductRequestDTO saveProduct(ProductRequestDTO body) throws Exception;
-    ProductPresentResponse updateProduct(ProductPresentRequestDTO body, Long id) throws Exception;
-    void deleteProduct(Long id) throws Exception;
+    void updateProduct(ProductRequestDTO body, Long id) throws Exception;
+    void deleteProduct(List<Long> ids) throws Exception;
     ProductResponseDTO findById(Long id);
 }

@@ -15,17 +15,14 @@ public class CategoryController {
     @Autowired
     private  CategoriesService categoriesService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> getProductsByCategory() {
         try{
             List<CategoryResponse> categoryList = categoriesService.getCategories();
             return ResponseEntity.ok().body(categoryList);
         }catch(Exception e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(500).body("Lỗi: " + e.getMessage());
         }
     }
-//    @PostMapping()
-//    public ResponseEntity<?> addCategory(@Valid @RequestBody Category category) {
-//
-//    }
+
 }

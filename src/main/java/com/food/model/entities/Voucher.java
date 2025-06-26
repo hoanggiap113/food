@@ -11,7 +11,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="vouchers")
-public class Voucher extends BaseEntity {
+public class Voucher {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name="code")
     private String code;

@@ -18,6 +18,7 @@ public class CategoriesService implements ICategoriesService {
 
     @Override
     public List<CategoryResponse> getCategories() {
-        return categoriesRepository.findAll().stream().map(CategoryResponse::from).collect(Collectors.toList());
+        List<CategoryResponse> categoryResponses = categoriesRepository.findAll().stream().map(CategoryResponse::from).collect(Collectors.toList());
+        return categoryResponses;
     }
 }
